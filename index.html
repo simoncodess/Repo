@@ -873,7 +873,7 @@ img{ display:block }
 </div>
 
 <script type="importmap">
-{ "imports": { "lenis": "https://unpkg.com/lenis@1.3.23/dist/lenis.mjs" } }
+{ "imports": { "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.3.23/dist/lenis.mjs" } }
 </script>
 <script type="module">
 /* Lenis drives all smooth scrolling. It is loaded via the importmap below; if the
@@ -1182,13 +1182,71 @@ bindHcBtn(hcNext, 1);
 
 /* ============================================================
    8. liquid reveal (cursor brush before/after)
+   ------------------------------------------------------------
+   The two hero photos are loaded from the public bucket. When that host is
+   unreachable (offline, or a host whose CSP blocks it) the hero would be a
+   flat grey box and the signature effect invisible, so each layer falls back
+   to a procedurally drawn stand-in. Both stand-ins share one seeded RNG, so
+   they are the same scene under two different grades -- exactly the
+   before/after relationship the brush is meant to reveal.
    ============================================================ */
+function makeStandIn(warm){
+  const c = document.createElement('canvas');
+  c.width = 1600; c.height = 1000;
+  const x = c.getContext('2d');
+  let seed = 20240912;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+
+  const g = x.createLinearGradient(0, 0, 0, c.height);
+  if (warm){ g.addColorStop(0, '#f6e6d6'); g.addColorStop(0.55, '#cf8047'); g.addColorStop(1, '#5d2c0e'); }
+  else { g.addColorStop(0, '#ecebe9'); g.addColorStop(0.55, '#c9c9c9'); g.addColorStop(1, '#8f8f8e'); }
+  x.fillStyle = g;
+  x.fillRect(0, 0, c.width, c.height);
+
+  for (let i = 0; i < 24; i++){
+    const cx = rnd() * c.width, cy = rnd() * c.height, r = 90 + rnd() * 400;
+    const a = 0.05 + rnd() * 0.13;
+    const rg = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+    rg.addColorStop(0, warm ? 'rgba(255,214,168,' + a + ')' : 'rgba(255,255,255,' + a + ')');
+    rg.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = rg;
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
+  }
+
+  for (let i = 0; i < 5; i++){
+    const y = c.height * (0.42 + i * 0.11) + rnd() * 40;
+    const bg = x.createLinearGradient(0, y - 60, 0, y + 60);
+    bg.addColorStop(0, 'rgba(0,0,0,0)');
+    bg.addColorStop(0.5, warm ? 'rgba(93,44,14,0.16)' : 'rgba(17,17,17,0.12)');
+    bg.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = bg;
+    x.fillRect(0, y - 60, c.width, 120);
+  }
+
+  x.globalAlpha = 0.055;
+  for (let i = 0; i < 9000; i++){
+    x.fillStyle = rnd() > 0.5 ? '#ffffff' : '#000000';
+    x.fillRect(rnd() * c.width, rnd() * c.height, 1.4, 1.4);
+  }
+  x.globalAlpha = 1;
+  return c;
+}
+
 (function liquidReveal(){
   const container = document.getElementById('liquid');
   const base = document.getElementById('heroBase');
   const canvas = document.getElementById('heroCanvas');
   if (!container || !canvas) return;
+  let baseSettled = false;
+  const useBaseStandIn = () => {
+    if (baseSettled) return;
+    baseSettled = true;
+    base.src = makeStandIn(false).toDataURL('image/jpeg', 0.92);
+  };
+  base.addEventListener('load', () => { baseSettled = true; });
+  base.addEventListener('error', useBaseStandIn);
   base.src = BEFORE_SRC;
+  setTimeout(useBaseStandIn, 3000);
   if (reduceMotion){ canvas.remove(); return; }
 
   const ctx = canvas.getContext('2d');
@@ -1204,16 +1262,19 @@ bindHcBtn(hcNext, 1);
   const cover = document.createElement('canvas');
   const cctx = cover.getContext('2d');
 
-  let cw = 1, ch = 1, imgReady = false;
+  let cw = 1, ch = 1, source = null;
   const img = new Image();
   img.decoding = 'async';
 
   function drawCover(){
-    if (!imgReady || !img.naturalWidth) return;
+    if (!source) return;
+    const sw = source.naturalWidth || source.width;
+    const sh = source.naturalHeight || source.height;
+    if (!sw || !sh) return;
     cctx.clearRect(0, 0, cw, ch);
-    const s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
-    const w = img.naturalWidth * s, h = img.naturalHeight * s;
-    cctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+    const s = Math.max(cw / sw, ch / sh);
+    const w = sw * s, h = sh * s;
+    cctx.drawImage(source, (cw - w) / 2, (ch - h) / 2, w, h);
   }
   function resize(){
     const r = container.getBoundingClientRect();
@@ -1227,8 +1288,10 @@ bindHcBtn(hcNext, 1);
     points.length = 0;
     last = null;
   }
-  img.addEventListener('load', () => { imgReady = true; drawCover(); });
+  img.addEventListener('load', () => { source = img; drawCover(); });
+  img.addEventListener('error', () => { if (!source) { source = makeStandIn(true); drawCover(); } });
   img.src = AFTER_SRC;
+  setTimeout(() => { if (!source){ source = makeStandIn(true); drawCover(); } }, 3000);
 
   const points = [];
   let last = null;
