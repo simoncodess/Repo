@@ -2,1251 +2,2631 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diet Soda | Pure Zero Refreshment</title>
-    <meta name="description" content="Experience the crisp, clean taste of Diet Soda. Zero sugar, zero compromise.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Inter:wght@400;500&family=Manrope:wght@400;700&family=Galada&display=swap"
-        rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
-        :root {
-            --bg-color: #0a0a0a;
-            --text-color: #ffffff;
-            --accent-color: #ffffff;
-            --muted-color: rgba(255, 255, 255, 0.7);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --font-main: 'Inter', sans-serif;
-            --font-heading: 'Galada', cursive;
-
-            /* Dynamic Background Variables */
-            --bg-inner: #0b8a78;
-            --bg-mid: #044e3b;
-            --bg-outer: #011411;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-mid) 50%, var(--bg-outer) 100%);
-            color: var(--text-color);
-            font-family: var(--font-main);
-            overflow: hidden; /* Remove scroll */
-            height: 100vh;
-            transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        body.blue-theme {
-            --bg-inner: #0b4f8a;
-            --bg-mid: #04294e;
-            --bg-outer: #010c14;
-        }
-
-        /* ================= BUBBLES ================= */
-        #bubbles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .bubble-img {
-            position: absolute;
-            pointer-events: none;
-        }
-
-        @keyframes floatUpImg {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.4;
-            }
-
-            90% {
-                opacity: 0.4;
-            }
-
-            100% {
-                transform: translateY(-110vh) translateX(30px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* ================= HEADER ================= */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2rem 4%;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 700;
-            font-size: 1.2rem;
-            font-family: var(--font-heading);
-        }
-
-        .nav {
-            display: flex;
-            gap: 0.5rem;
-            background: var(--glass-bg);
-            padding: 0.4rem;
-            border-radius: 100px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .nav.glass {
-            position: relative;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        .nav-item {
-            font-family: 'Manrope', sans-serif;
-            color: var(--muted-color);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            padding: 0.5rem 1.2rem;
-            border-radius: 100px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: #fbcfe8;
-            color: #011d17;
-        }
-
-        .contact-btn {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 0.9rem 2rem;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: none;
-        }
-
-        .contact-btn:hover {
-            background: rgba(0, 0, 0, 0.7);
-            transform: translateY(-2px);
-            box-shadow: none;
-        }
-
-        /* ================= HERO ================= */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4%;
-            padding-top: 5rem;
-        }
-
-        .hero-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: stretch; /* Stretch columns to full height */
-            width: 100%;
-            max-width: 100%;
-            padding: 0;
-            height: 100%;
-            position: relative;
-        }
-
-        /* Typography */
-        .main-title,
-        .side-title {
-            font-family: var(--font-heading);
-            font-size: clamp(5rem, 10vw, 12rem);
-            line-height: 0.8;
-            font-weight: 400;
-            text-transform: none;
-            white-space: nowrap;
-            color: white;
-            letter-spacing: normal;
-        }
-
-        .outline {
-            color: var(--text-color);
-        }
-
-        /* ================= LEAVES ================= */
-        .leaves-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1; /* Even further behind */
-            transition: transform 0.1s ease-out;
-        }
-
-        .leaf {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            pointer-events: none;
-            z-index: -1;
-            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
-        }
-
-        .l1 {
-            top: 10%;
-            left: 15%;
-        }
-
-        .l2 {
-            top: 40%;
-            left: 80%;
-            width: 140px;
-            height: 140px;
-            opacity: 0.4;
-        }
-
-        .l3 {
-            top: 70%;
-            left: 75%;
-            width: 80px;
-            height: 80px;
-        }
-
-        .l4 {
-            top: 85%;
-            left: 20%;
-            width: 120px;
-            height: 120px;
-            opacity: 0.3;
-        }
-
-        /* ================= HERO LEFT ================= */
-        .hero-left {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 6rem 0;
-            gap: 2rem;
-            z-index: 100;
-        }
-
-        @keyframes fadeInEntry {
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        .description {
-            color: var(--muted-color);
-            font-size: 1.1rem;
-            line-height: 1.6;
-            max-width: 400px;
-        }
-
-        .primary-btn {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 0.4rem 0.4rem 0.4rem 1.5rem;
-            border-radius: 100px;
-            font-weight: 700;
-            cursor: pointer;
-            width: fit-content;
-            transition: all 0.3s ease;
-            box-shadow: none;
-        }
-
-        .primary-btn:hover {
-            background: rgba(0, 0, 0, 0.7);
-            transform: translateY(-3px);
-            box-shadow: none;
-        }
-
-        .plus-icon {
-            background: #fbcfe8;
-            color: #011d17;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 1.4rem;
-            font-weight: 900;
-            line-height: 1;
-            padding-bottom: 2px; /* Compensate for baseline shift */
-            border: none;
-        }
-
-        .award-badge {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-top: auto; /* Push to bottom */
-        }
-
-        .award-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .award-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .award-title {
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            color: var(--muted-color);
-        }
-
-        .award-subtitle {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* ================= CENTER PRODUCT ================= */
-        .hero-center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out 0.3s forwards, float 6s ease-in-out infinite;
-            pointer-events: none;
-            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        .main-product-3d {
-            width: 80vw;
-            height: 80vh;
-            outline: none;
-            --progress-bar-color: transparent;
-            --poster-color: transparent;
-            z-index: 1;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(25deg);
-            pointer-events: none;
-        }
-
-        .main-product-3d[camera-controls] {
-            pointer-events: auto;
-        }
-
-        /* ================= BERRIES ================= */
-        .berries-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 110; /* Above text (100) and can (50) */
-            transition: transform 0.1s ease-out;
-        }
-
-        .berries-container-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0; /* Behind everything */
-            transition: transform 0.1s ease-out;
-        }
-
-        .berry {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            outline: none;
-            --progress-bar-color: transparent;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .berry.no-animation {
-            animation: none !important;
-        }
-
-        .b1 {
-            top: 25%;
-            left: 30%;
-            width: 220px;
-            height: 220px;
-        }
-
-        .b2 {
-            top: 60%;
-            left: 42%;
-            width: 100px;
-            height: 100px;
-        }
-
-        .b3 {
-            top: 30%;
-            left: 62%;
-            width: 250px;
-            height: 250px;
-        }
-
-        .b4 {
-            top: 15%;
-            left: 48%;
-            width: 140px;
-            height: 140px;
-        }
-
-        .b5 {
-            top: 75%;
-            left: 20%;
-            width: 120px;
-            height: 120px;
-        }
-
-        .b6 {
-            top: 45%;
-            left: 75%;
-            width: 180px;
-            height: 180px;
-        }
-
-        .b7 {
-            top: 15%;
-            left: 40%;
-            width: 80px;
-            height: 80px;
-            opacity: 0.7;
-        }
-
-        .b8 {
-            top: 50%;
-            left: 55%;
-            width: 70px;
-            height: 70px;
-            opacity: 0.6;
-        }
-
-        .b9 {
-            top: 80%;
-            left: 35%;
-            width: 75px;
-            height: 75px;
-            opacity: 0.7;
-        }
-
-        /* ================= HERO RIGHT ================= */
-        .hero-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: flex-end;
-            text-align: right;
-            height: 100%;
-            padding: 6rem 0;
-            z-index: 100;
-            width: 450px;
-            pointer-events: none;
-        }
-
-        @keyframes fadeInLeft {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .product-carousel {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            align-items: flex-end;
-            pointer-events: auto; /* Enable interaction */
-        }
-
-        .carousel-cards {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 1rem;
-            padding-top: 5rem;
-            border-radius: 28px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 135px;
-            position: relative;
-            backdrop-filter: blur(10px);
-            text-align: center;
-        }
-
-        .card:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .card.active {
-            border-color: #fbcfe8;
-            border-width: 1px;
-            background: var(--glass-bg);
-            box-shadow: none;
-        }
-
-        .card img {
-            width: 140px;
-            height: auto;
-            margin-top: -8rem;
-            filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.5));
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-            display: block;
-            will-change: transform;
-            pointer-events: none; /* Mouse passes through image to trigger card hover */
-        }
-
-        .card:hover img {
-            transform: translateY(-30px) rotate(-12deg) scale(1.15) !important;
-        }
-
-        .card-info {
-            display: flex;
-            flex-direction: column;
-            font-size: 0.7rem;
-            width: 100%;
-            word-wrap: break-word;
-        }
-
-        .card-info span:first-child {
-            font-weight: 600;
-        }
-
-        .card-info span:last-child {
-            color: var(--muted-color);
-        }
-
-        .carousel-nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .nav-arrow {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s;
-        }
-
-        .nav-arrow:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .side-title {
-            align-self: flex-end;
-            text-align: right;
-        }
-
-        /* ================= MISC ================= */
-        @keyframes shine {
-            from {
-                transform: translateX(-100%) rotate(45deg);
-            }
-
-            to {
-                transform: translateX(200%) rotate(45deg);
-            }
-        }
-
-        /* ================= RESPONSIVE ================= */
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 1200px) {
-            /* The one-screen hero only fits on wide viewports; below the
-               breakpoint the columns stack and the page is allowed to scroll. */
-            html,
-            body {
-                overflow-x: hidden;
-                overflow-y: auto;
-                height: auto;
-                min-height: 100vh;
-            }
-
-            .hero {
-                height: auto;
-                min-height: 100vh;
-                align-items: flex-start;
-                padding-top: 8rem;
-                padding-bottom: 4rem;
-            }
-
-            .hero-content {
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                height: auto;
-                gap: 3rem;
-            }
-
-            /* Can leaves the fixed overlay and leads the stack */
-            .hero-center {
-                order: -1;
-                position: relative;
-                width: 100%;
-                height: 55vh;
-                /* the 25deg tilt widens the canvas past the viewport - clip it */
-                overflow: hidden;
-            }
-
-            .main-product-3d {
-                position: relative;
-                top: auto;
-                left: auto;
-                transform: rotate(25deg);
-                display: block; /* don't depend on model-viewer's own stylesheet */
-                width: 100%;
-                height: 100%;
-                touch-action: pan-y; /* let vertical scroll win over orbit drag */
-            }
-
-            .hero-left,
-            .hero-right {
-                width: 100%;
-                max-width: 520px;
-                height: auto;
-                padding: 0;
-                align-items: center;
-                text-align: center;
-            }
-
-            .hero-left {
-                gap: 1.5rem;
-            }
-
-            .description {
-                max-width: none;
-            }
-
-            .award-badge {
-                margin-top: 0;
-                justify-content: center;
-            }
-
-            .product-carousel {
-                align-items: center;
-            }
-
-            .main-title,
-            .side-title {
-                font-size: 5rem;
-            }
-
-            .side-title {
-                align-self: center;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 700px) {
-            .header {
-                padding: 1.25rem 4%;
-            }
-
-            .nav {
-                display: none;
-            }
-
-            .hero {
-                padding-top: 6rem;
-            }
-
-            .hero-center {
-                height: 42vh;
-            }
-
-            /* Galada headlines are nowrap single words - size is the only lever */
-            .main-title,
-            .side-title {
-                font-size: 3rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<title>Diet Soda — Nothing Added. Everything Felt.</title>
+<meta name="description" content="Diet Soda is zero sugar, zero compromise. A 330ml aluminium instrument, engineered for taste. Explore the can in three dimensions.">
+<meta property="og:title" content="Diet Soda — Nothing Added. Everything Felt.">
+<meta property="og:description" content="Zero sugar, zero compromise. Explore the can in three dimensions.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Galada&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2305070a'/><rect x='11' y='6' width='10' height='20' rx='3' fill='%232fe6be'/></svg>">
+<style>
+/* ============================================================
+   DIET SODA — cinematic single page
+   Design system tokens. Everything downstream reads from here,
+   so a flavor change is one write to :root and the whole page
+   re-tunes itself.
+   ============================================================ */
+:root{
+  --ink:#05070a;
+  --ink-2:#0a0e14;
+  --paper:#f4f6f6;
+  --paper-dim:rgba(244,246,246,.62);
+  --paper-faint:rgba(244,246,246,.34);
+  --hair:rgba(244,246,246,.13);
+  --hair-soft:rgba(244,246,246,.07);
+
+  /* flavor-driven, animated by JS */
+  --accent:#2fe6be;
+  --accent-deep:#06382f;
+  --accent-glow:rgba(47,230,190,.28);
+
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --ease-io:cubic-bezier(.65,.05,.36,1);
+
+  --gut:clamp(1.25rem,4vw,4.5rem);
+  --maxw:1360px;
+
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+html{
+  scroll-behavior:auto;
+  -webkit-text-size-adjust:100%;
+}
+
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--sans);
+  font-weight:400;
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+
+body.is-locked{overflow:hidden;height:100vh}
+
+::selection{background:var(--accent);color:var(--ink)}
+
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img,svg{display:block;max-width:100%}
+
+:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+/* ============================================================
+   Fixed render layers. The WebGL canvas never scrolls — the
+   document scrolls past it, which is what sells the depth.
+   ============================================================ */
+#stage{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+}
+#gl{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* Radial environment wash behind the WebGL layer. */
+#wash{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background:
+    radial-gradient(120% 90% at 50% 42%, var(--accent-deep) 0%, transparent 62%),
+    radial-gradient(80% 60% at 78% 12%, rgba(255,255,255,.055) 0%, transparent 60%),
+    var(--ink);
+  transition:background 1.1s var(--ease);
+}
+
+/* Film grain + vignette. Cheap, and it does more for perceived
+   production value than another shader would. */
+#grain{
+  position:fixed;
+  inset:-120px;
+  z-index:60;
+  pointer-events:none;
+  opacity:.36;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+  animation:grainShift 620ms steps(3) infinite;
+}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}
+  33%{transform:translate(-14px,9px)}
+  66%{transform:translate(11px,-7px)}
+  100%{transform:translate(0,0)}
+}
+#vignette{
+  position:fixed;
+  inset:0;
+  z-index:58;
+  pointer-events:none;
+  background:radial-gradient(115% 85% at 50% 45%, transparent 44%, rgba(0,0,0,.55) 100%);
+}
+
+/* Letterbox bars — only used for the intro handoff. */
+.bar{
+  position:fixed;
+  left:0;right:0;
+  height:16vh;
+  background:var(--ink);
+  z-index:70;
+  pointer-events:none;
+}
+.bar-t{top:0}
+.bar-b{bottom:0}
+
+/* ============================================================
+   Preloader
+   ============================================================ */
+#preload{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:var(--ink);
+  display:grid;
+  place-items:center;
+  grid-template-rows:1fr auto 1fr;
+}
+#preload.done{pointer-events:none}
+.pre-mark{
+  grid-row:2;
+  text-align:center;
+  padding:0 var(--gut);
+}
+.pre-word{
+  font-family:var(--serif);
+  font-size:clamp(2.6rem,7vw,5.4rem);
+  line-height:1;
+  letter-spacing:-.02em;
+  overflow:hidden;
+}
+.pre-word span{
+  display:inline-block;
+  transform:translateY(110%);
+}
+.pre-sub{
+  margin-top:1.1rem;
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+  opacity:0;
+}
+.pre-meter{
+  position:absolute;
+  left:var(--gut);
+  right:var(--gut);
+  bottom:calc(var(--gut) + 2.2rem);
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:1rem;
+  font-family:var(--mono);
+  font-size:.68rem;
+  letter-spacing:.24em;
+  color:var(--paper-faint);
+  text-transform:uppercase;
+}
+.pre-track{
+  position:absolute;
+  left:var(--gut);
+  right:var(--gut);
+  bottom:var(--gut);
+  height:1px;
+  background:var(--hair);
+  overflow:hidden;
+}
+.pre-fill{
+  height:100%;
+  width:0%;
+  background:var(--accent);
+  transform-origin:left center;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+.header{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:50;
+  padding:1.4rem var(--gut);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+}
+.header::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,rgba(5,7,10,.72),transparent);
+  opacity:0;
+  transition:opacity .4s var(--ease);
+  pointer-events:none;
+  z-index:-1;
+}
+.header.solid::before{opacity:1}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+  font-family:var(--serif);
+  font-size:1.3rem;
+  letter-spacing:-.01em;
+  white-space:nowrap;
+}
+.brand-dot{
+  width:9px;height:9px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 0 0 var(--accent-glow);
+  animation:pulseDot 3.2s var(--ease) infinite;
+  flex:none;
+}
+@keyframes pulseDot{
+  0%,100%{box-shadow:0 0 0 0 var(--accent-glow)}
+  50%{box-shadow:0 0 0 9px rgba(0,0,0,0)}
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  gap:2.1rem;
+}
+.nav a{
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--paper-dim);
+  position:relative;
+  padding:.35rem 0;
+  transition:color .3s var(--ease);
+}
+.nav a::after{
+  content:'';
+  position:absolute;
+  left:0;bottom:0;
+  width:100%;height:1px;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:right center;
+  transition:transform .45s var(--ease);
+}
+.nav a:hover,.nav a.active{color:var(--paper)}
+.nav a:hover::after,.nav a.active::after{transform:scaleX(1);transform-origin:left center}
+
+.head-actions{display:flex;align-items:center;gap:.7rem}
+
+.btn{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.6rem;
+  padding:.72rem 1.35rem;
+  border-radius:999px;
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  border:1px solid var(--hair);
+  color:var(--paper);
+  overflow:hidden;
+  transition:border-color .4s var(--ease), color .4s var(--ease);
+  will-change:transform;
+}
+.btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--accent);
+  transform:translateY(101%);
+  transition:transform .5s var(--ease);
+  z-index:-1;
+}
+.btn>*{position:relative;z-index:1}
+.btn:hover{border-color:var(--accent);color:var(--ink)}
+.btn:hover::before{transform:translateY(0)}
+.btn.solid{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.btn.solid::before{background:var(--paper)}
+.btn.solid:hover{color:var(--ink);border-color:var(--paper)}
+
+.cart-btn{position:relative}
+.cart-count{
+  position:absolute;
+  top:-4px;right:-4px;
+  min-width:18px;height:18px;
+  padding:0 5px;
+  border-radius:999px;
+  background:var(--accent);
+  color:var(--ink);
+  font-family:var(--mono);
+  font-size:.6rem;
+  font-weight:500;
+  display:grid;
+  place-items:center;
+  line-height:1;
+}
+.cart-count[hidden]{display:none}
+
+/* ============================================================
+   Scroll rail — a chapter index that doubles as progress
+   ============================================================ */
+.rail{
+  position:fixed;
+  right:calc(var(--gut) * .55);
+  top:50%;
+  transform:translateY(-50%);
+  z-index:45;
+  display:flex;
+  flex-direction:column;
+  gap:.95rem;
+  align-items:flex-end;
+  opacity:0;
+  transition:opacity .6s var(--ease);
+}
+.rail.show{opacity:1}
+.rail-item{
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  color:var(--paper-faint);
+  transition:color .35s var(--ease);
+}
+.rail-item .lbl{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  opacity:0;
+  transform:translateX(6px);
+  transition:opacity .35s var(--ease),transform .35s var(--ease);
+  white-space:nowrap;
+}
+.rail-item .tick{
+  width:26px;height:1px;
+  background:currentColor;
+  transition:width .4s var(--ease);
+  flex:none;
+}
+.rail-item:hover,.rail-item.on{color:var(--paper)}
+.rail-item:hover .lbl,.rail-item.on .lbl{opacity:1;transform:none}
+.rail-item.on .tick{width:44px;background:var(--accent)}
+
+/* ============================================================
+   Layout primitives
+   ============================================================ */
+main{position:relative;z-index:10}
+
+.act{
+  position:relative;
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  padding:12vh var(--gut);
+}
+.act-inner{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* A long act: the section supplies the scroll distance, the inner block pins
+   to the viewport so the copy stays put while the 3D does the talking. */
+.act.tall{
+  min-height:230svh;
+  align-items:flex-start;
+  padding-top:0;
+  padding-bottom:0;
+}
+.act.tall>.act-inner{
+  position:sticky;
+  top:0;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:12vh 0;
+}
+.col-6{max-width:min(46ch,50%)}
+.push-right{margin-left:auto}
+
+.eyebrow{
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+  font-family:var(--mono);
+  font-size:.64rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:1.6rem;
+}
+.eyebrow::before{
+  content:'';
+  width:34px;height:1px;
+  background:currentColor;
+  flex:none;
+}
+
+h1,h2,h3{font-weight:400;letter-spacing:-.025em;line-height:1.02}
+h1{font-family:var(--serif);font-size:clamp(2.7rem,7.4vw,7.2rem)}
+h2{font-family:var(--serif);font-size:clamp(2.4rem,6vw,4.9rem);line-height:1.04}
+h3{font-family:var(--serif);font-size:clamp(1.5rem,2.4vw,2.1rem)}
+em{font-style:italic;color:var(--accent)}
+
+.lede{
+  font-size:clamp(1rem,1.25vw,1.16rem);
+  line-height:1.72;
+  color:var(--paper-dim);
+  max-width:44ch;
+  margin-top:1.7rem;
+  font-weight:300;
+}
+
+/* Line-mask reveal: each line sits in its own overflow box so the text rises
+   rather than fades. The offset is applied by JS, never here — see above. */
+.reveal{display:block;overflow:hidden}
+.reveal>span{display:block;will-change:transform}
+
+/* ============================================================
+   Act I — Hero
+   ============================================================ */
+.hero{
+  min-height:100svh;
+  align-items:flex-end;
+  padding-bottom:clamp(3rem,9vh,7rem);
+}
+.hero h1{
+  margin-left:-.06em;
+  mix-blend-mode:normal;
+}
+.hero-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:3rem;
+  flex-wrap:wrap;
+}
+.hero-meta{
+  display:flex;
+  flex-direction:column;
+  gap:1.4rem;
+  align-items:flex-start;
+  padding-bottom:.7rem;
+}
+.hero-cta{display:flex;gap:.7rem;flex-wrap:wrap}
+
+.scroll-hint{
+  position:absolute;
+  left:50%;
+  bottom:1.6rem;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.7rem;
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+  pointer-events:none;
+}
+.scroll-hint .line{
+  width:1px;height:46px;
+  background:linear-gradient(to bottom,var(--accent),transparent);
+  animation:dropLine 2.4s var(--ease-io) infinite;
+  transform-origin:top center;
+}
+@keyframes dropLine{
+  0%{transform:scaleY(0);opacity:0}
+  35%{transform:scaleY(1);opacity:1}
+  100%{transform:scaleY(1) translateY(46px);opacity:0}
+}
+
+/* Spec strip under the hero — technical, restrained */
+.spec-strip{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--hair);
+  margin-top:clamp(2.5rem,6vh,4.5rem);
+}
+.spec{
+  padding:1.25rem 1.4rem 0 0;
+  border-right:1px solid var(--hair-soft);
+}
+.spec:last-child{border-right:0}
+.spec dt{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+  margin-bottom:.5rem;
+}
+.spec dd{
+  font-family:var(--serif);
+  font-size:clamp(1.3rem,2vw,1.85rem);
+  line-height:1;
+}
+
+/* ============================================================
+   Act II — annotated object. Hotspots are positioned every
+   frame from projected 3D anchors.
+   ============================================================ */
+#hotspots{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .7s var(--ease);
+}
+#hotspots.show{opacity:1}
+#leaders{
+  position:absolute;
+  inset:0;
+  width:100%;height:100%;
+  overflow:visible;
+}
+#leaders path{
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:1;
+  opacity:.55;
+  stroke-dasharray:3 4;
+}
+.hot{
+  position:absolute;
+  top:0;left:0;
+  transform-origin:left center;
+  will-change:transform;
+}
+.hot-dot{
+  position:absolute;
+  width:7px;height:7px;
+  border-radius:50%;
+  background:var(--accent);
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px var(--accent-glow);
+}
+.hot.left .hot-card{
+  transform:translate(-100%,-50%);
+  border-left:0;
+  border-right:1px solid var(--accent);
+  text-align:right;
+}
+.hot-card{
+  position:absolute;
+  transform:translate(0,-50%);
+  width:198px;
+  padding:.55rem .8rem;
+  border-left:1px solid var(--accent);
+  background:rgba(5,7,10,.5);
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
+}
+.hot-card b{
+  display:block;
+  font-family:var(--mono);
+  font-size:.62rem;
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--paper);
+}
+.hot-card span{
+  display:block;
+  margin-top:.22rem;
+  font-size:.74rem;
+  line-height:1.45;
+  color:var(--paper-faint);
+  font-weight:300;
+}
+
+/* ============================================================
+   Act III — exploded view part index
+   ============================================================ */
+.parts{
+  list-style:none;
+  margin-top:2.2rem;
+  border-top:1px solid var(--hair-soft);
+}
+.parts li{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:baseline;
+  gap:1.1rem;
+  padding:.95rem .2rem;
+  border-bottom:1px solid var(--hair-soft);
+  color:var(--paper-faint);
+  transition:color .4s var(--ease),padding-left .4s var(--ease);
+}
+.parts li.on{color:var(--paper);padding-left:.7rem}
+.parts li .idx{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.14em;
+  color:var(--accent);
+  opacity:.4;
+  transition:opacity .4s var(--ease);
+}
+.parts li.on .idx{opacity:1}
+.parts li .nm{font-size:.95rem}
+.parts li .qt{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.1em;
+  white-space:nowrap;
+}
+
+/* ============================================================
+   Act IV — ingredients
+   ============================================================ */
+.card-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1px;
+  margin-top:clamp(2.5rem,6vh,4rem);
+  background:var(--hair-soft);
+  border:1px solid var(--hair-soft);
+}
+.card{
+  position:relative;
+  background:rgba(10,14,20,.55);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  padding:1.9rem 1.5rem 1.6rem;
+  transform-style:preserve-3d;
+  transition:background .5s var(--ease);
+  will-change:transform;
+}
+.card:hover{background:rgba(15,21,29,.78)}
+.card .num{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.22em;
+  color:var(--accent);
+  margin-bottom:2.6rem;
+  display:block;
+}
+.card h3{margin-bottom:.6rem}
+.card p{
+  font-size:.86rem;
+  line-height:1.65;
+  color:var(--paper-faint);
+  font-weight:300;
+}
+.card::after{
+  content:'';
+  position:absolute;
+  left:0;bottom:0;
+  height:1px;width:0;
+  background:var(--accent);
+  transition:width .6s var(--ease);
+}
+.card:hover::after{width:100%}
+
+/* ============================================================
+   Act V — flavors
+   ============================================================ */
+.flavor-list{list-style:none;margin-top:1.4rem}
+.flavor{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:1.1rem;
+  width:100%;
+  padding:.72rem 0;
+  border-bottom:1px solid var(--hair-soft);
+  text-align:left;
+  color:var(--paper-faint);
+  transition:color .45s var(--ease);
+}
+.flavor .swatch{
+  width:11px;height:11px;
+  border-radius:50%;
+  flex:none;
+  transform:scale(.7);
+  transition:transform .45s var(--ease),box-shadow .45s var(--ease);
+}
+.flavor .fname{
+  font-family:var(--serif);
+  font-size:clamp(1.5rem,3.4vw,2.6rem);
+  line-height:1.1;
+  letter-spacing:-.02em;
+  transition:transform .5s var(--ease);
+}
+.flavor .fnote{
+  margin-left:auto;
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  opacity:0;
+  transform:translateX(-8px);
+  transition:opacity .45s var(--ease),transform .45s var(--ease);
+  white-space:nowrap;
+}
+.flavor:hover{color:var(--paper-dim)}
+.flavor[aria-selected="true"]{color:var(--paper)}
+.flavor[aria-selected="true"] .swatch{transform:scale(1.25);box-shadow:0 0 0 4px var(--accent-glow)}
+.flavor[aria-selected="true"] .fname{transform:translateX(6px)}
+.flavor[aria-selected="true"] .fnote{opacity:1;transform:none}
+
+.tasting{
+  margin-top:1.2rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.6rem;
+  max-width:520px;
+}
+.tasting div{border-top:1px solid var(--hair)}
+.tasting dt{
+  font-family:var(--mono);
+  font-size:.56rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+  padding-top:.7rem;
+}
+.tasting dd{
+  font-family:var(--serif);
+  font-size:1.5rem;
+  margin-top:.25rem;
+}
+.meter{
+  height:2px;
+  background:var(--hair);
+  margin-top:.7rem;
+  overflow:hidden;
+}
+.meter i{
+  display:block;
+  height:100%;
+  width:0;
+  background:var(--accent);
+  transition:width .9s var(--ease);
+}
+
+/* ============================================================
+   Act VI — numbers
+   ============================================================ */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:clamp(1.6rem,4vw,3.4rem);
+  margin-top:clamp(2.5rem,6vh,4rem);
+}
+.stat .v{
+  font-family:var(--serif);
+  font-size:clamp(3rem,7vw,5.6rem);
+  line-height:.92;
+  letter-spacing:-.04em;
+  display:flex;
+  align-items:baseline;
+  gap:.15em;
+}
+.stat .v .u{font-size:.34em;color:var(--accent);letter-spacing:0}
+.stat .k{
+  margin-top:.9rem;
+  padding-top:.9rem;
+  border-top:1px solid var(--hair);
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+}
+
+/* ============================================================
+   Act VII — finale + footer
+   ============================================================ */
+.footer{
+  position:relative;
+  z-index:10;
+  padding:clamp(3rem,8vh,6rem) var(--gut) 2rem;
+  border-top:1px solid var(--hair-soft);
+  background:linear-gradient(to bottom,transparent,rgba(3,4,6,.85));
+}
+.footer-inner{
+  max-width:var(--maxw);
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  gap:2.5rem;
+  flex-wrap:wrap;
+  align-items:flex-end;
+}
+.footer nav{display:flex;gap:1.6rem;flex-wrap:wrap}
+.footer a,.footer p{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+  transition:color .3s var(--ease);
+}
+.footer a:hover{color:var(--accent)}
+
+/* ============================================================
+   Cart drawer / modal / toast
+   ============================================================ */
+.scrim{
+  position:fixed;
+  inset:0;
+  z-index:98;
+  background:rgba(2,3,5,.72);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .45s var(--ease);
+}
+.scrim.on{opacity:1;pointer-events:auto}
+
+.drawer{
+  position:fixed;
+  top:0;right:0;bottom:0;
+  width:min(430px,100vw);
+  z-index:99;
+  background:var(--ink-2);
+  border-left:1px solid var(--hair);
+  transform:translateX(101%);
+  transition:transform .62s var(--ease);
+  display:flex;
+  flex-direction:column;
+  visibility:hidden;
+}
+.drawer.on{transform:none;visibility:visible}
+.drawer-head,.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:1.5rem var(--gut);
+  border-bottom:1px solid var(--hair-soft);
+  flex:none;
+}
+.drawer-head h2,.modal-head h2{font-size:1.5rem}
+.x{
+  width:34px;height:34px;
+  border-radius:50%;
+  border:1px solid var(--hair);
+  display:grid;place-items:center;
+  font-size:.9rem;
+  color:var(--paper-dim);
+  transition:border-color .3s var(--ease),color .3s var(--ease),transform .3s var(--ease);
+  flex:none;
+}
+.x:hover{border-color:var(--accent);color:var(--accent);transform:rotate(90deg)}
+.drawer-body{flex:1;overflow-y:auto;padding:1.2rem var(--gut)}
+.drawer-foot{padding:1.3rem var(--gut) 1.6rem;border-top:1px solid var(--hair-soft);flex:none}
+
+.line-item{
+  display:grid;
+  grid-template-columns:44px 1fr auto;
+  gap:1rem;
+  align-items:center;
+  padding:1rem 0;
+  border-bottom:1px solid var(--hair-soft);
+}
+.li-chip{
+  width:44px;height:56px;
+  border-radius:7px;
+  background:linear-gradient(160deg,var(--c1),var(--c2));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
+}
+.li-name{font-size:.92rem}
+.li-sub{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--paper-faint);text-transform:uppercase;margin-top:.2rem}
+.qty{display:flex;align-items:center;gap:.55rem}
+.qty button{
+  width:26px;height:26px;
+  border:1px solid var(--hair);
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-family:var(--mono);
+  font-size:.8rem;
+  color:var(--paper-dim);
+  transition:border-color .3s,color .3s;
+}
+.qty button:hover{border-color:var(--accent);color:var(--accent)}
+.qty span{font-family:var(--mono);font-size:.75rem;min-width:1.2ch;text-align:center}
+
+.total-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  margin-bottom:1.1rem;
+  font-family:var(--mono);
+  font-size:.66rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+}
+.total-row b{font-family:var(--serif);font-size:1.8rem;letter-spacing:0;color:var(--paper);text-transform:none}
+.empty{
+  padding:3.5rem 0;
+  text-align:center;
+  color:var(--paper-faint);
+  font-size:.88rem;
+}
+
+.modal{
+  position:fixed;
+  z-index:99;
+  top:50%;left:50%;
+  width:min(520px,calc(100vw - 2rem));
+  max-height:min(86vh,720px);
+  transform:translate(-50%,-46%) scale(.97);
+  background:var(--ink-2);
+  border:1px solid var(--hair);
+  border-radius:4px;
+  opacity:0;
+  pointer-events:none;
+  visibility:hidden;
+  transition:opacity .4s var(--ease),transform .5s var(--ease);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.modal.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto;visibility:visible}
+.modal-body{padding:1.5rem var(--gut) 1.8rem;overflow-y:auto}
+.field{margin-bottom:1.15rem}
+.field label{
+  display:block;
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--paper-faint);
+  margin-bottom:.5rem;
+}
+.field input,.field textarea{
+  width:100%;
+  padding:.75rem .9rem;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--hair);
+  border-radius:3px;
+  color:var(--paper);
+  font-family:var(--sans);
+  font-size:.9rem;
+  transition:border-color .3s var(--ease),background .3s var(--ease);
+}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--accent);background:rgba(255,255,255,.05)}
+.field .err{
+  display:block;
+  margin-top:.4rem;
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.1em;
+  color:#ff7a7a;
+  min-height:.9rem;
+}
+.form-note{
+  margin-top:.9rem;
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.12em;
+  color:var(--accent);
+  min-height:1rem;
+}
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:2rem;
+  transform:translate(-50%,260%);
+  opacity:0;
+  visibility:hidden;
+  z-index:120;
+  padding:.8rem 1.4rem;
+  background:var(--paper);
+  color:var(--ink);
+  border-radius:999px;
+  font-family:var(--mono);
+  font-size:.64rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  transition:transform .55s var(--ease),opacity .35s var(--ease),visibility .35s;
+  pointer-events:none;
+  white-space:nowrap;
+  max-width:calc(100vw - 2rem);
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#toast.on{transform:translate(-50%,0);opacity:1;visibility:visible}
+
+/* ============================================================
+   Custom cursor (pointer:fine only)
+   ============================================================ */
+#cursor,#cursor-dot{
+  position:fixed;
+  top:0;left:0;
+  z-index:150;
+  pointer-events:none;
+  border-radius:50%;
+  will-change:transform;
+  display:none;
+}
+#cursor{
+  width:36px;height:36px;
+  margin:-18px 0 0 -18px;
+  border:1px solid var(--paper-faint);
+  transition:width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease);
+}
+#cursor-dot{
+  width:4px;height:4px;
+  margin:-2px 0 0 -2px;
+  background:var(--accent);
+}
+#cursor.grow{
+  width:72px;height:72px;
+  margin:-36px 0 0 -36px;
+  border-color:var(--accent);
+  background:var(--accent-glow);
+}
+#cursor .cl{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  font-family:var(--mono);
+  font-size:.5rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--paper);
+  opacity:0;
+  transition:opacity .3s var(--ease);
+}
+#cursor.grow .cl{opacity:1}
+@media (pointer:fine){
+  body.cursor-on{cursor:none}
+  body.cursor-on a,body.cursor-on button{cursor:none}
+  body.cursor-on #cursor,body.cursor-on #cursor-dot{display:block}
+}
+
+/* While a drag is in flight, stop the browser selecting copy underneath. */
+body.dragging{user-select:none;-webkit-user-select:none}
+body.dragging *{cursor:grabbing !important}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (min-width:1081px){
+  /* the chapter rail owns the right gutter — keep copy out of it */
+  .act{padding-right:calc(var(--gut) + 92px)}
+}
+@media (max-width:1080px){
+  .rail{display:none}
+  .col-6{max-width:none;width:100%}
+  .act{padding-top:16vh;padding-bottom:8vh}
+  .spec-strip{grid-template-columns:repeat(2,1fr)}
+  .spec{padding-bottom:1.1rem;border-bottom:1px solid var(--hair-soft)}
+  .spec:nth-child(2n){border-right:0}
+}
+@media (max-width:820px){
+  .nav{display:none}
+  .header{padding:.9rem var(--gut)}
+  .header .btn{padding:.6rem 1rem;font-size:.6rem}
+
+  /* The render owns the top of the screen; the copy owns the bottom, on an
+     opaque ground so nothing is read through a moving 3D model. */
+  .act{
+    position:relative;
+    min-height:100svh;
+    align-items:flex-start;
+    padding:42vh var(--gut) 12vh;
+  }
+  .act::before{
+    content:'';
+    position:absolute;
+    left:0;right:0;
+    top:30vh;bottom:0;
+    background:linear-gradient(to bottom,rgba(5,7,10,0) 0%,var(--ink) 20%,var(--ink) 100%);
+    z-index:-1;
+    pointer-events:none;
+  }
+  .act.tall{min-height:210svh;padding-top:0;padding-bottom:0}
+  .act.tall>.act-inner{padding:42vh 0 12vh}
+  .act.tall::before{top:34vh}
+
+  .tasting{grid-template-columns:repeat(2,1fr)}
+  #hotspots{display:none}
+  .hero-row{flex-direction:column;align-items:flex-start}
+  .hero-cta{width:100%}
+  .hero-cta .btn{flex:1 1 auto;justify-content:center}
+  .eyebrow{font-size:.58rem;letter-spacing:.22em}
+  .lede{margin-top:1.2rem}
+}
+@media (max-width:560px){
+  .spec-strip{grid-template-columns:repeat(2,1fr)}
+  .spec{border-right:0}
+  .tasting{grid-template-columns:1fr 1fr}
+  .drawer-head,.modal-head,.drawer-body,.drawer-foot,.modal-body{padding-left:1.25rem;padding-right:1.25rem}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal>span{transform:none !important}
+  #grain{display:none}
+}
+</style>
 </head>
 
 <body>
-    <div id="bubbles-container"></div>
 
-    <header class="header">
-        <div class="logo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-                <path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-            <span>Soda</span>
+<div id="wash" aria-hidden="true"></div>
+<div id="stage" aria-hidden="true"><canvas id="gl"></canvas></div>
+<div id="vignette" aria-hidden="true"></div>
+<div id="grain" aria-hidden="true"></div>
+<div class="bar bar-t" aria-hidden="true"></div>
+<div class="bar bar-b" aria-hidden="true"></div>
+
+<div id="cursor" aria-hidden="true"><span class="cl"></span></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+
+<!-- 3D-tracked annotations, positioned each frame -->
+<div id="hotspots" aria-hidden="true">
+  <svg id="leaders" preserveAspectRatio="none"></svg>
+</div>
+
+<!-- ============================ PRELOADER ============================ -->
+<div id="preload">
+  <div class="pre-mark">
+    <div class="pre-word"><span>Diet</span> <span>Soda</span></div>
+    <p class="pre-sub">Calibrating the instrument</p>
+  </div>
+  <div class="pre-meter"><span id="pre-state">Assembling geometry</span><span id="pre-pct">00</span></div>
+  <div class="pre-track"><div class="pre-fill" id="pre-fill"></div></div>
+</div>
+
+<!-- ============================ HEADER ============================ -->
+<header class="header" id="header">
+  <a class="brand" href="#home" data-cursor="Top"><span class="brand-dot"></span>Diet Soda</a>
+  <nav class="nav" id="nav">
+    <a href="#object" data-nav="object">The Object</a>
+    <a href="#anatomy" data-nav="anatomy">Anatomy</a>
+    <a href="#inside" data-nav="inside">Inside</a>
+    <a href="#flavors" data-nav="flavors">Flavors</a>
+    <a href="#proof" data-nav="proof">Proof</a>
+  </nav>
+  <div class="head-actions">
+    <button class="btn cart-btn" type="button" id="open-cart" aria-haspopup="dialog">
+      <span>Cart</span><span class="cart-count" id="cart-count" hidden>0</span>
+    </button>
+    <button class="btn solid" type="button" id="head-buy">Buy a case</button>
+  </div>
+</header>
+
+<!-- ============================ CHAPTER RAIL ============================ -->
+<div class="rail" id="rail" aria-hidden="true">
+  <a class="rail-item" href="#home"><span class="lbl">Arrival</span><span class="tick"></span></a>
+  <a class="rail-item" href="#object"><span class="lbl">The Object</span><span class="tick"></span></a>
+  <a class="rail-item" href="#anatomy"><span class="lbl">Anatomy</span><span class="tick"></span></a>
+  <a class="rail-item" href="#inside"><span class="lbl">Inside</span><span class="tick"></span></a>
+  <a class="rail-item" href="#flavors"><span class="lbl">Flavors</span><span class="tick"></span></a>
+  <a class="rail-item" href="#proof"><span class="lbl">Proof</span><span class="tick"></span></a>
+  <a class="rail-item" href="#order"><span class="lbl">Order</span><span class="tick"></span></a>
+</div>
+
+<main>
+
+<!-- ============================ ACT I — ARRIVAL ============================ -->
+<section class="act hero" id="home" data-act="0" data-rail="0">
+  <div class="act-inner">
+    <p class="eyebrow"><span class="reveal"><span>330 ml &nbsp;/&nbsp; Zero sugar &nbsp;/&nbsp; Est. 2019</span></span></p>
+    <h1>
+      <span class="reveal"><span>Nothing added.</span></span>
+      <span class="reveal"><span><em>Everything</em> felt.</span></span>
+    </h1>
+    <div class="hero-row">
+      <div class="hero-meta">
+        <p class="lede reveal"><span>We took everything out. What&rsquo;s left is the part you actually wanted &mdash; cold, sharp, and gone in nine seconds.</span></p>
+        <div class="hero-cta">
+          <button class="btn solid" type="button" id="hero-buy" data-cursor="Add">Buy a case &mdash; &pound;18</button>
+          <a class="btn" href="#object" data-cursor="Look">Examine the can</a>
         </div>
-        <nav class="nav glass">
-            <a href="#" class="nav-item active">Home</a>
-            <a href="#" class="nav-item">Ingredients</a>
-            <a href="#" class="nav-item">Taste</a>
-            <a href="#" class="nav-item">Eco</a>
-            <a href="#" class="nav-item">Reviews</a>
-        </nav>
-        <button class="contact-btn">Contact Us</button>
-    </header>
-
-    <main class="hero">
-        <div class="hero-content">
-            <div class="leaves-container">
-                <model-viewer class="leaf l1"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="45deg 75deg 105%"></model-viewer>
-                <model-viewer class="leaf l2"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="-30deg 60deg 105%"></model-viewer>
-                <model-viewer class="leaf l3"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="120deg 85deg 105%"></model-viewer>
-                <model-viewer class="leaf l4"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/leaves.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="10deg 45deg 105%"></model-viewer>
-            </div>
-
-            <div class="hero-left">
-                <h1 class="main-title large-animation-1">
-                    <span class="outline">Pure</span><br>
-                    Zero
-                </h1>
-                <p class="description">
-                    Unleash the crisp taste of zero sugar. <br>
-                    Refreshment redefined in every bubble — <br>
-                    all in one sleek design.
-                </p>
-                <div class="cta-group">
-                    <button class="primary-btn">
-                        Shop Now
-                        <span class="plus-icon">+</span>
-                    </button>
-                </div>
-                <div class="award-badge">
-                    <div class="award-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 15L15 18L19 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                    </div>
-                    <div class="award-text">
-                        <span class="award-title">DESIGN AWARDS</span>
-                        <span class="award-subtitle">PREMIUM BEVERAGE 2025</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="berries-container-bg">
-                <model-viewer class="berry b7"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="-20deg 110deg 105%"></model-viewer>
-                <model-viewer class="berry b8"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="160deg 45deg 105%"></model-viewer>
-                <model-viewer class="berry b9"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.0" interaction-prompt="none"
-                    camera-orbit="45deg 20deg 105%"></model-viewer>
-            </div>
-
-            <div class="hero-center">
-                <model-viewer id="product-model"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/deit_soda2.glb"
-                    alt="Diet Soda 3D Model" camera-controls disable-zoom shadow-intensity="0"
-                    environment-image="neutral" exposure="1.5" interaction-prompt="none"
-                    camera-orbit="0deg 90deg 380%" field-of-view="30deg" class="main-product-3d">
-                </model-viewer>
-            </div>
-
-            <div class="berries-container">
-                <model-viewer class="berry b1"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.2" interaction-prompt="none"
-                    camera-orbit="45deg 120deg 105%"></model-viewer>
-                <model-viewer class="berry b2"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.2" interaction-prompt="none"
-                    camera-orbit="-120deg 45deg 105%"></model-viewer>
-                <model-viewer class="berry b3"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.2" interaction-prompt="none"
-                    camera-orbit="200deg 90deg 105%"></model-viewer>
-                <model-viewer class="berry b4"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.2" interaction-prompt="none"
-                    camera-orbit="10deg 20deg 105%"></model-viewer>
-                <model-viewer class="berry b5"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.2" interaction-prompt="none"
-                    camera-orbit="-45deg 160deg 105%"></model-viewer>
-                <model-viewer class="berry b6"
-                    src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"
-                    environment-image="neutral" exposure="1.2" interaction-prompt="none"
-                    camera-orbit="80deg 75deg 105%"></model-viewer>
-            </div>
-
-            <div class="hero-right">
-                <div class="product-carousel">
-                    <div class="carousel-cards">
-                        <div class="card active" data-flavor="classic">
-                            <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/Green%20Soda.png"
-                                alt="Diet Classic">
-                            <div class="card-info">
-                                <span>Diet Classic</span>
-                                <span>$2.99</span>
-                            </div>
-                        </div>
-                        <div class="card" data-flavor="blue">
-                            <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/Blue%20Soda.png"
-                                alt="Zero Lime" style="filter: brightness(0.7);">
-                            <div class="card-info">
-                                <span>Zero Lime</span>
-                                <span>$2.99</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-nav">
-                        <button class="nav-arrow">←</button>
-                        <button class="nav-arrow">→</button>
-                    </div>
-                </div>
-                <h2 class="side-title large-animation-1">
-                    <span class="outline">Refreshingly</span><br>
-                    Clean
-                </h2>
-            </div>
-        </div>
-    </main>
-
-    <svg style="position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none;">
-        <filter id="frosted">
-            <feTurbulence type="fractalNoise" baseFrequency="0.0125" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="80" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
-
-    <div style="display: none;">
-        <!-- Preload berry models to avoid lag during switch -->
-        <model-viewer
-            src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/blueberry.glb"></model-viewer>
-        <model-viewer
-            src="https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb"></model-viewer>
+      </div>
     </div>
+    <dl class="spec-strip">
+      <div class="spec"><dt>Sugar</dt><dd>0 g</dd></div>
+      <div class="spec"><dt>Calories</dt><dd>1 kcal</dd></div>
+      <div class="spec"><dt>Serve at</dt><dd>3 &deg;C</dd></div>
+      <div class="spec"><dt>Body</dt><dd>100% Al</dd></div>
+    </dl>
+  </div>
+  <div class="scroll-hint"><span class="line"></span><span>Scroll</span></div>
+</section>
 
-    <script>
-        const modelViewer = document.querySelector('#product-model');
-        const berriesFG = document.querySelector('.berries-container');
-        const berriesBG = document.querySelector('.berries-container-bg');
-        const leavesBG = document.querySelector('.leaves-container');
-        const allBerries = document.querySelectorAll('.berry');
-        const cards = document.querySelectorAll('.card');
-        let isSwitching = false;
-        let switchSpin = 0;
-        let blueTexture = null;
-        let greenTexture = null;
+<!-- ============================ ACT II — THE OBJECT ============================ -->
+<section class="act" id="object" data-act="1" data-rail="1">
+  <div class="act-inner">
+    <div class="col-6 push-right">
+      <p class="eyebrow"><span class="reveal"><span>Chapter 01 — The Object</span></span></p>
+      <h2>
+        <span class="reveal"><span>A vessel</span></span>
+        <span class="reveal"><span>designed to</span></span>
+        <span class="reveal"><span><em>disappear</em>.</span></span>
+      </h2>
+      <p class="lede reveal"><span>The best packaging is the packaging you stop noticing. Ours is 0.097&nbsp;mm of rolled aluminium &mdash; thinner than two sheets of paper &mdash; holding six atmospheres of pressure without a seam.</span></p>
+      <p class="lede reveal"><span>Drag it. It&rsquo;s yours to turn.</span></p>
+    </div>
+  </div>
+</section>
 
-        // Preload textures & Warm up shaders
-        modelViewer.addEventListener('load', async () => {
-            try {
-                blueTexture = await modelViewer.createTexture('https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/blue%20base%20color.jpg');
-                greenTexture = await modelViewer.createTexture('https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/green%20base%20color.jpg');
+<!-- ============================ ACT III — ANATOMY ============================ -->
+<section class="act tall" id="anatomy" data-act="2" data-rail="2">
+  <div class="act-inner">
+    <div class="col-6">
+      <p class="eyebrow"><span class="reveal"><span>Chapter 02 — Anatomy</span></span></p>
+      <h2>
+        <span class="reveal"><span>Five parts.</span></span>
+        <span class="reveal"><span>One <em>pull</em>.</span></span>
+      </h2>
+      <p class="lede reveal"><span>Keep scrolling and it comes apart in your hands. Every component earns its place or it isn&rsquo;t there.</span></p>
+      <ol class="parts" id="parts">
+        <li data-part="0"><span class="idx">01</span><span class="nm">Stay-on tab</span><span class="qt">0.3 g</span></li>
+        <li data-part="1"><span class="idx">02</span><span class="nm">Scored lid &amp; double seam</span><span class="qt">202 &oslash;</span></li>
+        <li data-part="2"><span class="idx">03</span><span class="nm">Neck taper</span><span class="qt">14&deg;</span></li>
+        <li data-part="3"><span class="idx">04</span><span class="nm">Printed body wall</span><span class="qt">0.097 mm</span></li>
+        <li data-part="4"><span class="idx">05</span><span class="nm">Domed base</span><span class="qt">6 bar</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
 
-                // Shader Warm-up: Briefly apply textures to compile shaders
-                if (modelViewer.model) {
-                    const material = modelViewer.model.materials[0];
-                    if (material && material.pbrMetallicRoughness.baseColorTexture) {
-                        // Apply blue
-                        material.pbrMetallicRoughness.baseColorTexture.setTexture(blueTexture);
-                        await new Promise(r => requestAnimationFrame(r));
-                        // Apply green back
-                        material.pbrMetallicRoughness.baseColorTexture.setTexture(greenTexture);
-                    }
-                }
-            } catch (e) { console.error("Texture preload failed", e); }
-        });
+<!-- ============================ ACT IV — INSIDE ============================ -->
+<section class="act" id="inside" data-act="3" data-rail="3">
+  <div class="act-inner">
+    <p class="eyebrow"><span class="reveal"><span>Chapter 03 — Inside</span></span></p>
+    <h2 style="max-width:15ch">
+      <span class="reveal"><span>Four things.</span></span>
+      <span class="reveal"><span>That&rsquo;s the <em>whole</em> list.</span></span>
+    </h2>
+    <div class="card-row" id="cards">
+      <article class="card" data-tilt><span class="num">01</span><h3>Triple-filtered water</h3><p>Carbon, reverse osmosis, then UV. Stripped back to neutral so nothing competes with the flavour.</p></article>
+      <article class="card" data-tilt><span class="num">02</span><h3>CO<sub>2</sub>, 3.9 volumes</h3><p>Carbonated cold at 2&nbsp;&deg;C. High enough to sting, low enough to drink fast without gasping.</p></article>
+      <article class="card" data-tilt><span class="num">03</span><h3>Cold-pressed extract</h3><p>Real fruit, pressed and never heated. Two hundred kilos in, eleven litres of aromatic out.</p></article>
+      <article class="card" data-tilt><span class="num">04</span><h3>A pinch of sea salt</h3><p>0.02&nbsp;g. Invisible on the tongue, but it is the reason the finish is clean instead of flat.</p></article>
+    </div>
+  </div>
+</section>
 
-        const navArrows = document.querySelectorAll('.nav-arrow');
+<!-- ============================ ACT V — FLAVORS ============================ -->
+<section class="act" id="flavors" data-act="4" data-rail="4">
+  <div class="act-inner">
+    <div class="col-6">
+      <p class="eyebrow"><span class="reveal"><span>Chapter 04 — Range</span></span></p>
+      <h2><span class="reveal"><span>Pick a <em>weather</em>.</span></span></h2>
+      <ul class="flavor-list" id="flavor-list" role="tablist" aria-label="Flavours"></ul>
+      <dl class="tasting">
+        <div><dt>Acidity</dt><dd id="t-ph">3.2 pH</dd><div class="meter"><i id="m-ph"></i></div></div>
+        <div><dt>Sweetness</dt><dd id="t-sw">Low</dd><div class="meter"><i id="m-sw"></i></div></div>
+        <div><dt>Finish</dt><dd id="t-fn">9 s</dd><div class="meter"><i id="m-fn"></i></div></div>
+      </dl>
+      <p class="lede" id="flavor-note" style="min-height:4.6rem;margin-top:1.4rem"></p>
+      <div class="hero-cta" style="margin-top:.4rem">
+        <button class="btn solid" type="button" id="add-current" data-cursor="Add">Add this flavour</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-        function activeCardIndex() {
-            return Array.from(cards).findIndex(c => c.classList.contains('active'));
+<!-- ============================ ACT VI — PROOF ============================ -->
+<section class="act" id="proof" data-act="5" data-rail="5">
+  <div class="act-inner">
+    <p class="eyebrow"><span class="reveal"><span>Chapter 05 — Proof</span></span></p>
+    <h2 style="max-width:18ch"><span class="reveal"><span>The numbers we&rsquo;d</span></span><span class="reveal"><span>rather be <em>judged</em> on.</span></span></h2>
+    <div class="stat-grid">
+      <div class="stat"><div class="v" data-count="0"><span data-num>0</span><span class="u">g</span></div><div class="k">Sugar per can</div></div>
+      <div class="stat"><div class="v" data-count="68"><span data-num>0</span><span class="u">%</span></div><div class="k">Recycled aluminium</div></div>
+      <div class="stat"><div class="v" data-count="9"><span data-num>0</span><span class="u">s</span></div><div class="k">Average finish</div></div>
+      <div class="stat"><div class="v" data-count="41"><span data-num>0</span><span class="u">k</span></div><div class="k">Cases shipped</div></div>
+    </div>
+    <p class="lede" style="margin-top:3rem">Aluminium is the only pack in the chiller that comes back as itself. A can you drink today can be back on this shelf in sixty days &mdash; which is why we never put this drink in plastic, and never will.</p>
+  </div>
+</section>
+
+<!-- ============================ ACT VII — ORDER ============================ -->
+<section class="act" id="order" data-act="6" data-rail="6">
+  <div class="act-inner">
+    <div class="col-6">
+      <p class="eyebrow"><span class="reveal"><span>Chapter 06 — Yours</span></span></p>
+      <h2>
+        <span class="reveal"><span>Cold. Sharp.</span></span>
+        <span class="reveal"><span><em>Gone in nine.</em></span></span>
+      </h2>
+      <p class="lede reveal"><span>Twelve cans, delivered chilled, free over &pound;30. Cancel a subscription in one click &mdash; we&rsquo;d rather you came back because you wanted to.</span></p>
+      <div class="hero-cta" style="margin-top:2.2rem">
+        <button class="btn solid" type="button" id="final-buy" data-cursor="Add">Buy a case &mdash; &pound;18</button>
+        <button class="btn" type="button" id="open-contact" data-cursor="Write">Talk to us</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <p style="font-family:var(--serif);font-size:1.9rem;letter-spacing:-.02em;text-transform:none;color:var(--paper)">Diet Soda</p>
+      <p style="margin-top:.7rem">&copy; <span id="yr">2026</span> Diet Soda Beverage Co.</p>
+    </div>
+    <nav>
+      <a href="#object">The Object</a>
+      <a href="#flavors">Flavors</a>
+      <a href="#proof">Proof</a>
+      <a href="#" id="foot-contact">Contact</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- ============================ OVERLAYS ============================ -->
+<div class="scrim" id="scrim"></div>
+
+<aside class="drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
+  <div class="drawer-head">
+    <h2 id="cart-title">Your case</h2>
+    <button class="x" type="button" data-close aria-label="Close cart">&#10005;</button>
+  </div>
+  <div class="drawer-body" id="cart-body"></div>
+  <div class="drawer-foot" id="cart-foot"></div>
+</aside>
+
+<div class="modal" id="contact" role="dialog" aria-modal="true" aria-labelledby="contact-title" aria-hidden="true">
+  <div class="modal-head">
+    <h2 id="contact-title">Talk to us</h2>
+    <button class="x" type="button" data-close aria-label="Close">&#10005;</button>
+  </div>
+  <div class="modal-body">
+    <form id="contact-form" novalidate>
+      <div class="field">
+        <label for="cf-name">Name</label>
+        <input id="cf-name" name="name" type="text" maxlength="80" autocomplete="name">
+        <span class="err" id="e-name"></span>
+      </div>
+      <div class="field">
+        <label for="cf-email">Email</label>
+        <input id="cf-email" name="email" type="email" maxlength="120" autocomplete="email">
+        <span class="err" id="e-email"></span>
+      </div>
+      <div class="field">
+        <label for="cf-msg">Message</label>
+        <textarea id="cf-msg" name="message" maxlength="1200"></textarea>
+        <span class="err" id="e-msg"></span>
+      </div>
+      <button class="btn solid" type="submit" style="width:100%">Send</button>
+      <p class="form-note" id="contact-note"></p>
+    </form>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+'use strict';
+
+/* ============================================================================
+   DIET SODA — interactive build
+   ----------------------------------------------------------------------------
+   One WebGL stage sits behind the document and never scrolls. Sections publish
+   a *target* pose; a rAF loop damps the live pose toward it. Nothing is
+   keyed frame-by-frame to the scrollbar, which is why the motion stays smooth
+   through fast flicks and momentum scrolling.
+   ========================================================================== */
+
+var REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+var FINE    = matchMedia('(pointer:fine)').matches;
+var hasGL   = (function () {
+  try {
+    var c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+  } catch (e) { return false; }
+})();
+
+var $  = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+var lerp  = function (a, b, t) { return a + (b - a) * t; };
+var isPhone = function () { return innerWidth < 820; };
+
+/* ============================================================================
+   1. Brand data
+   ========================================================================== */
+var FLAVORS = [
+  {
+    key: 'verdant', name: 'Verdant', note: 'Lime & mint',
+    accent: '#2fe6be', deep: '#06382f', glow: 'rgba(47,230,190,.28)',
+    labelA: '#16b295', labelB: '#04463a', wave: '#d8fff4',
+    rim: 0xfbcfe8, fill: 0x35e0bd, liquid: 0x1fd6ae,
+    sub: 'LIME · MINT',
+    copy: 'Kaffir lime pressed over cold mint. It arrives green and leaves clean — the one we drink at the end of a long shift.',
+    tasting: { ph: '3.2 pH', sw: 'Low', fn: '9 s', mph: 62, msw: 22, mfn: 55 }
+  },
+  {
+    key: 'cobalt', name: 'Cobalt', note: 'Yuzu & salt',
+    accent: '#4fa8ff', deep: '#062a52', glow: 'rgba(79,168,255,.28)',
+    labelA: '#1673c4', labelB: '#052d55', wave: '#d6efff',
+    rim: 0xbfe3ff, fill: 0x4fb2f5, liquid: 0x3f9df0,
+    sub: 'YUZU · SALT',
+    copy: 'Japanese yuzu with a saline edge. The sharpest thing we make, and the reason people say our cans taste colder than they are.',
+    tasting: { ph: '2.9 pH', sw: 'None', fn: '11 s', mph: 82, msw: 8, mfn: 72 }
+  },
+  {
+    key: 'ember', name: 'Ember', note: 'Blood orange',
+    accent: '#ff7a3d', deep: '#3d1405', glow: 'rgba(255,122,61,.28)',
+    labelA: '#e2571f', labelB: '#4a1706', wave: '#ffe2d0',
+    rim: 0xffd2b0, fill: 0xff8f52, liquid: 0xf2652a,
+    sub: 'BLOOD ORANGE',
+    copy: 'Sicilian blood orange, pressed in February when the flesh runs darkest. Rounder than the others. The one that converts sceptics.',
+    tasting: { ph: '3.5 pH', sw: 'Medium', fn: '7 s', mph: 48, msw: 44, mfn: 38 }
+  },
+  {
+    key: 'blush', name: 'Blush', note: 'Sour cherry',
+    accent: '#ff5c8a', deep: '#400a1e', glow: 'rgba(255,92,138,.28)',
+    labelA: '#d92e5f', labelB: '#4d0c22', wave: '#ffdbe6',
+    rim: 0xffc4d6, fill: 0xff6f97, liquid: 0xe33e6c,
+    sub: 'SOUR CHERRY',
+    copy: 'Morello cherry, unsweetened, with the stone note left in. Tart enough to make you check the label for sugar. There isn’t any.',
+    tasting: { ph: '3.1 pH', sw: 'Low', fn: '10 s', mph: 68, msw: 26, mfn: 64 }
+  }
+];
+var flavorIndex = 0;
+var F = function () { return FLAVORS[flavorIndex]; };
+
+/* ============================================================================
+   2. Canvas-drawn textures — nothing is fetched over the network
+   ========================================================================== */
+function spacedText(g, txt, cx, y, spacing) {
+  var i, w = 0, chars = String(txt).split('');
+  for (i = 0; i < chars.length; i++) w += g.measureText(chars[i]).width + spacing;
+  w -= spacing;
+  var x = cx - w / 2;
+  for (i = 0; i < chars.length; i++) {
+    g.fillText(chars[i], x, y);
+    x += g.measureText(chars[i]).width + spacing;
+  }
+}
+
+function drawLabel(f) {
+  var c = document.createElement('canvas');
+  c.width = 2048; c.height = 1024;
+  var g = c.getContext('2d');
+
+  var grad = g.createLinearGradient(0, 0, 0, 1024);
+  grad.addColorStop(0, f.labelB);
+  grad.addColorStop(.44, f.labelA);
+  grad.addColorStop(1, f.labelB);
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 2048, 1024);
+
+  /* the single graphic device on the pack: one sweeping wave */
+  g.save();
+  g.globalAlpha = .15;
+  g.fillStyle = '#ffffff';
+  g.beginPath();
+  g.moveTo(0, 790);
+  g.bezierCurveTo(512, 690, 1536, 900, 2048, 790);
+  g.lineTo(2048, 1024);
+  g.bezierCurveTo(1536, 1024, 512, 900, 0, 1024);
+  g.closePath();
+  g.fill();
+  g.restore();
+
+  /* Three repeats, so a whole wordmark faces the camera whatever the rotation.
+     Two left a seam sitting dead centre on the front of the can. */
+  [341, 1024, 1707].forEach(function (cx) {
+    g.textAlign = 'center';
+    g.fillStyle = '#ffffff';
+    g.font = '228px Galada, cursive';
+    g.fillText('Soda', cx, 470);
+
+    g.textAlign = 'left';
+    g.font = '500 34px "JetBrains Mono", monospace';
+    g.fillStyle = f.wave;
+    spacedText(g, f.sub, cx, 566, 11);
+
+    g.font = '400 24px "JetBrains Mono", monospace';
+    g.fillStyle = 'rgba(255,255,255,.62)';
+    spacedText(g, '0 SUGAR · 330 ML', cx, 634, 6);
+
+    g.beginPath();
+    g.arc(cx, 700, 9, 0, Math.PI * 2);
+    g.fillStyle = f.wave;
+    g.fill();
+  });
+
+  /* vertical specular bands, so the print catches light as it turns */
+  for (var i = 0; i < 6; i++) {
+    var x = i * 341 + 60;
+    var band = g.createLinearGradient(x, 0, x + 150, 0);
+    band.addColorStop(0, 'rgba(255,255,255,0)');
+    band.addColorStop(.5, 'rgba(255,255,255,.11)');
+    band.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = band;
+    g.fillRect(x, 0, 150, 1024);
+  }
+
+  var tex = new THREE.CanvasTexture(c);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.anisotropy = 8;
+  tex.encoding = THREE.sRGBEncoding;
+  return tex;
+}
+
+function drawShadow() {
+  var c = document.createElement('canvas');
+  c.width = c.height = 256;
+  var g = c.getContext('2d');
+  var rg = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+  rg.addColorStop(0, 'rgba(0,0,0,.72)');
+  rg.addColorStop(.45, 'rgba(0,0,0,.34)');
+  rg.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = rg;
+  g.fillRect(0, 0, 256, 256);
+  return new THREE.CanvasTexture(c);
+}
+
+function drawSpeck() {
+  var c = document.createElement('canvas');
+  c.width = c.height = 64;
+  var g = c.getContext('2d');
+  var rg = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  rg.addColorStop(0, 'rgba(255,255,255,1)');
+  rg.addColorStop(.35, 'rgba(255,255,255,.5)');
+  rg.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = rg;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
+}
+
+/* A soft studio environment, generated rather than downloaded. This is what
+   makes the aluminium read as metal instead of grey plastic. */
+function makeEnv(renderer) {
+  var c = document.createElement('canvas');
+  c.width = 512; c.height = 256;
+  var g = c.getContext('2d');
+  var sky = g.createLinearGradient(0, 0, 0, 256);
+  sky.addColorStop(0, '#ffffff');
+  sky.addColorStop(.40, '#cbd4d6');
+  sky.addColorStop(.58, '#394345');
+  sky.addColorStop(1, '#080b0c');
+  g.fillStyle = sky;
+  g.fillRect(0, 0, 512, 256);
+  [[120, 62, 76], [372, 92, 52], [258, 150, 40]].forEach(function (s) {
+    var glow = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]);
+    glow.addColorStop(0, 'rgba(255,255,255,.96)');
+    glow.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = glow;
+    g.fillRect(s[0] - s[2], s[1] - s[2], s[2] * 2, s[2] * 2);
+  });
+  /* one dark bar reads as a softbox edge and gives the can a crisp highlight line */
+  g.fillStyle = 'rgba(0,0,0,.5)';
+  g.fillRect(0, 108, 512, 10);
+
+  var tex = new THREE.CanvasTexture(c);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  var env = pmrem.fromEquirectangular(tex).texture;
+  pmrem.dispose();
+  tex.dispose();
+  return env;
+}
+
+/* ============================================================================
+   3. The world
+   ========================================================================== */
+var W = null;   /* everything WebGL lives in here, or stays null on fallback */
+
+function buildWorld() {
+  var canvas = $('#gl');
+  var renderer = new THREE.WebGLRenderer({
+    canvas: canvas, alpha: true, antialias: true, powerPreference: 'high-performance'
+  });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isPhone() ? 1.6 : 2));
+  renderer.setSize(innerWidth, innerHeight, false);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.02;
+
+  var scene = new THREE.Scene();
+  var env = makeEnv(renderer);
+  scene.environment = env;
+
+  var camera = new THREE.PerspectiveCamera(34, innerWidth / innerHeight, .1, 120);
+  camera.position.set(0, 0, 13);
+
+  /* ---- lights ------------------------------------------------------------ */
+  var hemi = new THREE.HemisphereLight(0xcfeee6, 0x05100e, .5);
+  scene.add(hemi);
+  var key = new THREE.DirectionalLight(0xffffff, 1.5);
+  key.position.set(4.5, 7, 6.5);
+  scene.add(key);
+  var rim = new THREE.DirectionalLight(F().rim, .85);
+  rim.position.set(-6.5, 2, -4);
+  scene.add(rim);
+  var fill = new THREE.DirectionalLight(F().fill, .55);
+  fill.position.set(5.5, -4.5, 2.5);
+  scene.add(fill);
+
+  /* ---- the can ----------------------------------------------------------- */
+  var labelTex = drawLabel(F());
+  var alu     = new THREE.MeshStandardMaterial({ color: 0xe4ebee, metalness: 1, roughness: .22, envMapIntensity: 1.15 });
+  var aluDark = new THREE.MeshStandardMaterial({ color: 0xa9b4b9, metalness: 1, roughness: .36, envMapIntensity: 1 });
+  var printed = new THREE.MeshStandardMaterial({ map: labelTex, metalness: .45, roughness: .3, envMapIntensity: 1.1 });
+
+  var can = new THREE.Group();
+
+  /* Parts are held in a list with an explode direction, so the anatomy act is
+     one scalar away from a full teardown. */
+  var parts = [];
+  function part(mesh, y, dir, spin) {
+    mesh.position.y = y;
+    can.add(mesh);
+    parts.push({ m: mesh, y0: y, dir: dir, spin: spin || 0 });
+    return mesh;
+  }
+
+  var body = part(new THREE.Mesh(new THREE.CylinderGeometry(1.42, 1.42, 3.9, 128, 1, true), printed), .05, 0, 0);
+  body.renderOrder = 1;
+
+  /* an inner wall so the can never looks hollow-transparent from the top */
+  var inner = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.385, 1.385, 3.85, 96, 1, true),
+    new THREE.MeshStandardMaterial({ color: 0x1a2226, metalness: .9, roughness: .55, side: THREE.BackSide })
+  );
+  inner.position.y = .05;
+  can.add(inner);
+
+  /* the drink itself, a disc near the top of the fill line */
+  var liquid = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.37, 1.37, .06, 64),
+    new THREE.MeshPhysicalMaterial({
+      color: F().liquid, metalness: 0, roughness: .12,
+      clearcoat: 1, clearcoatRoughness: .06, transparent: true, opacity: .92
+    })
+  );
+  liquid.position.y = 1.48;
+  can.add(liquid);
+
+  part(new THREE.Mesh(new THREE.CylinderGeometry(1.01, 1.42, .62, 128, 1, true), alu), 2.31, .5, .1);
+  part(new THREE.Mesh(new THREE.CylinderGeometry(1.01, 1.01, .16, 128, 1, true), alu), 2.70, .85, -.14);
+  var lid = part(new THREE.Mesh(new THREE.CylinderGeometry(.94, .99, .1, 128), aluDark), 2.76, 1.2, .2);
+  part(new THREE.Mesh(new THREE.TorusGeometry(.99, .05, 16, 128), alu), 2.80, 1.2, .2).rotation.x = Math.PI / 2;
+
+  /* the pull tab — the detail that makes it read as a can and not a tube */
+  var tab = new THREE.Group();
+  var ring = new THREE.Mesh(new THREE.TorusGeometry(.3, .045, 12, 48), alu);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.x = .18;
+  tab.add(ring);
+  var arm = new THREE.Mesh(new THREE.BoxGeometry(.46, .04, .15), alu);
+  arm.position.x = -.2;
+  tab.add(arm);
+  var rivet = new THREE.Mesh(new THREE.CylinderGeometry(.07, .07, .07, 20), aluDark);
+  rivet.position.set(-.38, .02, 0);
+  tab.add(rivet);
+  part(tab, 2.84, 1.5, .55);
+
+  part(new THREE.Mesh(new THREE.CylinderGeometry(1.42, 1.15, .36, 128, 1, true), alu), -2.08, -.7, -.18);
+  part(new THREE.Mesh(new THREE.CylinderGeometry(1.15, .96, .18, 128), aluDark), -2.31, -1.1, -.26);
+
+  scene.add(can);
+
+  /* ---- contact shadow ---------------------------------------------------- */
+  var shadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(9, 9),
+    new THREE.MeshBasicMaterial({ map: drawShadow(), transparent: true, opacity: .55, depthWrite: false })
+  );
+  shadow.rotation.x = -Math.PI / 2;
+  shadow.position.y = -2.62;
+  scene.add(shadow);
+
+  /* ---- rising bubbles ---------------------------------------------------- */
+  var NB = isPhone() ? 46 : 110;
+  var bubbleMat = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, metalness: 0, roughness: .03,
+    clearcoat: 1, clearcoatRoughness: 0,
+    transparent: true, opacity: .17, envMapIntensity: 2.6,
+    depthWrite: false          /* stops them stacking into grey smudges */
+  });
+  var bubbles = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 2), bubbleMat, NB);
+  bubbles.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  var bStates = [];
+  for (var i = 0; i < NB; i++) {
+    bStates.push({
+      a: Math.random() * Math.PI * 2,
+      r: 2.6 + Math.random() * 4.4,
+      z: -3.2 - Math.random() * 4.5,
+      y: -4 + Math.random() * 12,
+      s: .028 + Math.random() * .062,
+      v: .34 + Math.random() * .95,
+      w: (Math.random() - .5) * .5
+    });
+  }
+  scene.add(bubbles);
+
+  /* ---- fine fizz, for volume -------------------------------------------- */
+  var NS = isPhone() ? 240 : 620;
+  var sPos = new Float32Array(NS * 3);
+  for (i = 0; i < NS; i++) {
+    var ang = Math.random() * Math.PI * 2, rad = 2 + Math.random() * 9;
+    sPos[i * 3]     = Math.cos(ang) * rad;
+    sPos[i * 3 + 1] = -6 + Math.random() * 16;
+    sPos[i * 3 + 2] = -2 - Math.random() * 9;
+  }
+  var sGeo = new THREE.BufferGeometry();
+  sGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+  var speckMat = new THREE.PointsMaterial({
+    size: .085, map: drawSpeck(), transparent: true, opacity: .5,
+    depthWrite: false, blending: THREE.AdditiveBlending,
+    color: new THREE.Color(F().accent), sizeAttenuation: true
+  });
+  var specks = new THREE.Points(sGeo, speckMat);
+  scene.add(specks);
+
+  return {
+    renderer: renderer, scene: scene, camera: camera, can: can, parts: parts,
+    body: body, inner: inner, liquid: liquid, lid: lid, tab: tab,
+    printed: printed, shadow: shadow,
+    bubbles: bubbles, bStates: bStates, specks: specks, speckMat: speckMat,
+    bubbleMat: bubbleMat, lights: { hemi: hemi, key: key, rim: rim, fill: fill },
+    dummy: new THREE.Object3D(), env: env
+  };
+}
+
+/* ============================================================================
+   4. Pose model — acts publish a target, the loop damps toward it
+   ========================================================================== */
+/* On phones the model is shrunk and parked above the copy rather than behind
+   it — a product you cannot read text over is just an expensive background. */
+var phoneScale = 1;
+
+var POSE = {
+  camZ: 13, camY: 0, camX: 0,
+  canX: 0, canY: 0, tiltX: 0, spin: 0,
+  scale: 1, explode: 0, lift: 0, shadowO: .55, fizz: .5, exposure: 1.02
+};
+var live = Object.assign({}, POSE);
+var goal = Object.assign({}, POSE);
+
+/* Per-viewport act poses. Phones get the can centred and pushed back so it
+   never fights the copy for the same pixels. */
+function actPoses() {
+  var p = isPhone();
+  var ox = p ? 0 : 1;
+  phoneScale = p ? .72 : 1;
+  return [
+    /* 0 arrival — product upper right, headline owns the lower left */
+    { camZ: p ? 19.0 : 17.2, camY: .20, canX: ox *  3.05, canY: p ? 2.80 : 1.00, tiltX: .05, scale: 1.00, explode: 0, lift: 0, shadowO: .45, fizz: .45, exposure: 1.02 },
+    /* 1 object — model left, copy right, annotations in the gap between */
+    { camZ: p ? 19.0 : 16.2, camY: .00, canX: ox * -2.60, canY: p ? 2.70 : -.30,           tiltX: .02, scale: 1.02, explode: 0, lift: 0, shadowO: .60, fizz: .50, exposure: 1.06 },
+    /* 2 anatomy — pulled back far enough to hold the whole teardown */
+    { camZ: p ? 30.0 : 20.5, camY: .35, canX: ox *  2.50, canY: p ? 3.70 : -.62,           tiltX: .07, scale: 1.00, explode: 0, lift: 0, shadowO: .30, fizz: .35, exposure: 1.04 },
+    /* 3 inside — camera rises above the rim, lid floats clear, full fizz */
+    { camZ: p ? 21.0 : 17.0, camY: p ? 2.2 : 2.40, canX: 0, canY: p ? 3.00 : 2.30, tiltX: .10, scale: .78, explode: 0, lift: .45, shadowO: .12, fizz: 1, exposure: 1.12 },
+    /* 4 flavors — model right, the range list reads down the left */
+    { camZ: p ? 19.0 : 16.5, camY: .00, canX: ox *  3.00, canY: p ? 2.70 : .00,            tiltX: .03, scale: 1.00, explode: 0, lift: 0, shadowO: .60, fizz: .55, exposure: 1.05 },
+    /* 5 proof — the can recedes; the numbers carry this act alone */
+    { camZ: p ? 24.0 : 26.0, camY: .00, canX: ox *  4.60, canY: p ? 3.00 : -4.40,          tiltX: .06, scale: .90,  explode: 0, lift: 0, shadowO: .20, fizz: .30, exposure: .94 },
+    /* 6 order — closing hero: product right, the ask left */
+    { camZ: p ? 19.0 : 16.0, camY: .00, canX: ox * 2.95,  canY: p ? 2.70 : .20,  tiltX: .02, scale: 1.08, explode: 0, lift: 0, shadowO: .58, fizz: .70, exposure: 1.10 }
+  ];
+}
+var POSES = actPoses();
+var currentAct = 0;
+var scrubExplode = 0;   /* written by the anatomy scrub, honoured only in act 2 */
+function setAct(i) {
+  currentAct = i;
+  var p = POSES[i];
+  for (var k in p) goal[k] = p[k];
+}
+
+/* drag-to-rotate, with inertia */
+var drag = { on: false, x: 0, vel: 0, spin: 0, auto: .0016 };
+
+/* Additive offsets. The damping loop owns `live`, so anything GSAP wants to
+   animate goes here instead of fighting the lerp for the same property. */
+var introOff = { z: 0, s: 0 };
+var fizzBoost = { v: 0 };
+
+/* ============================================================================
+   5. Annotations — DOM cards pinned to points on a rotating 3D model
+   ========================================================================== */
+var HOTS = [
+  { p: [  .18, 2.94,  .00], side: 'right', dy: -120, t: 'Stay-on tab', s: 'Rivet-set, scored to open at 12 N. It never leaves the can.' },
+  { p: [  .94, 2.76,  .34], side: 'right', dy:   46, t: 'Double seam', s: 'Five folds of aluminium. Holds six bar without a drop of glue.' },
+  { p: [-1.33,  .30, -.45], side: 'left',  dy:   30, t: 'Body wall',   s: '0.097 mm, drawn from a single disc. No seam, anywhere.' },
+  { p: [ 1.01,-2.22,  .40], side: 'right', dy:  112, t: 'Domed base',  s: 'An arch, upside down. Pressure makes it stronger, not weaker.' }
+];
+var hotEls = [];
+function buildHotspots() {
+  var wrap = $('#hotspots'), svg = $('#leaders');
+  HOTS.forEach(function (h, i) {
+    var el = document.createElement('div');
+    el.className = 'hot ' + h.side;
+    el.innerHTML = '<span class="hot-dot"></span><div class="hot-card"><b>' + h.t + '</b><span>' + h.s + '</span></div>';
+    wrap.appendChild(el);
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    svg.appendChild(path);
+    hotEls.push({
+      el: el, dot: el.firstChild, card: el.lastChild, path: path,
+      v: new THREE.Vector3(), side: h.side === 'left' ? -1 : 1, dy: h.dy
+    });
+  });
+}
+
+var _center = null;   /* lazily built: THREE may not exist */
+function layoutHotspots() {
+  if (!W || !hotEls.length) return;
+  var w = innerWidth, h = innerHeight;
+  if (!_center) _center = new THREE.Vector3();
+  _center.set(0, 0, 0);
+  W.can.localToWorld(_center);
+  var centerDepth = _center.distanceTo(W.camera.position);
+
+  for (var i = 0; i < hotEls.length; i++) {
+    var H = hotEls[i], a = HOTS[i];
+    H.v.set(a.p[0], a.p[1], a.p[2]);
+    W.can.localToWorld(H.v);
+    var depth = H.v.distanceTo(W.camera.position);
+    H.v.project(W.camera);
+    var x = (H.v.x * .5 + .5) * w;
+    var y = (-H.v.y * .5 + .5) * h;
+
+    /* points that have swung behind the can fade out rather than pop */
+    var behind = clamp((depth - centerDepth) / 1.1, 0, 1);
+    var vis = (1 - behind) * (H.v.z < 1 ? 1 : 0);
+
+    /* keep the card on screen: flip sides if its own side has run out of room,
+       then clamp vertically so the header and footer never clip it */
+    var CARD = 198, OFF = 88, PAD = 20, side = H.side;
+    if (side > 0 && x + OFF + CARD > w - PAD) side = -1;
+    if (side < 0 && x - OFF - CARD < PAD)     side =  1;
+    if (side > 0 && x + OFF + CARD > w - PAD) side = H.side;   /* neither fits */
+
+    var cy = clamp(y + H.dy, 120, h - 86) - y;
+    var cx = side * OFF;
+
+    H.el.classList.toggle('left', side < 0);
+    H.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+    H.el.style.opacity = vis.toFixed(3);
+    H.card.style.left = cx + 'px';
+    H.card.style.top  = cy + 'px';
+    H.path.setAttribute('d',
+      'M' + x + ' ' + y +
+      'L' + (x + side * 30) + ' ' + y +
+      'L' + (x + cx) + ' ' + (y + cy));
+    H.path.style.opacity = (vis * .55).toFixed(3);
+  }
+}
+
+/* ============================================================================
+   6. Frame loop
+   ========================================================================== */
+var pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+var clock = null, elapsed = 0;
+
+function frame() {
+  requestAnimationFrame(frame);
+  if (!W) return;
+
+  var dt = Math.min(clock.getDelta(), .05);
+  elapsed += dt;
+
+  /* damping — a single exponential per key keeps everything in sympathy */
+  goal.explode = currentAct === 2 ? scrubExplode : 0;
+
+  var k = 1 - Math.pow(.0016, dt);
+  for (var key in goal) live[key] = lerp(live[key], goal[key], k);
+
+  pointer.x = lerp(pointer.x, pointer.tx, 1 - Math.pow(.002, dt));
+  pointer.y = lerp(pointer.y, pointer.ty, 1 - Math.pow(.002, dt));
+
+  /* drag inertia */
+  if (!drag.on) drag.vel *= Math.pow(.02, dt);
+  drag.spin += drag.vel * dt;
+  if (!REDUCED && !switching) drag.spin += drag.auto * dt * 60;
+
+  var cam = W.camera;
+  cam.position.set(
+    live.camX + pointer.x * 1.15,
+    live.camY - pointer.y * .75,
+    live.camZ + introOff.z
+  );
+  cam.lookAt(0, live.camY * .5, 0);
+
+  var can = W.can;
+  can.position.set(live.canX, live.canY, 0);
+  can.rotation.set(live.tiltX + pointer.y * .05, drag.spin, pointer.x * .02);
+  can.scale.setScalar(Math.max(.01, (live.scale + introOff.s) * phoneScale));
+
+  /* teardown */
+  var e = live.explode;
+  for (var i = 0; i < W.parts.length; i++) {
+    var P = W.parts[i];
+    /* dir >= 1.2 is the lid group: tab, lid disc and seam ring */
+    P.m.position.y = P.y0 + P.dir * e * 1.9 + (P.dir >= 1.2 ? live.lift : 0);
+    if (P.spin) P.m.rotation.z = P.spin * (e + live.lift * .25);
+  }
+  W.liquid.material.opacity = .92 * clamp(1 - e * 2.4, 0, 1);
+  W.liquid.visible = e < .42;
+  W.liquid.position.y = 1.48 + Math.sin(elapsed * .9) * .012;
+
+  W.shadow.material.opacity = live.shadowO * (1 - e * .55);
+  W.shadow.position.x = live.canX;
+  W.shadow.scale.setScalar(live.scale * (1 + e * .3));
+  W.renderer.toneMappingExposure = live.exposure;
+
+  /* bubbles ride the can wherever it sits */
+  var d = W.dummy, B = W.bStates;
+  for (i = 0; i < B.length; i++) {
+    var b = B[i];
+    b.y += b.v * dt * (.5 + live.fizz + fizzBoost.v);
+    b.a += b.w * dt;
+    if (b.y > 8.5) {
+      b.y = -6.5;
+      b.a = Math.random() * Math.PI * 2;
+      b.r = 2.6 + Math.random() * 4.4;
+      b.z = -3.2 - Math.random() * 4.5;
+    }
+    d.position.set(live.canX + Math.cos(b.a) * b.r, b.y, b.z + Math.sin(b.a) * b.r * .35);
+    var wob = 1 + Math.sin(elapsed * 2.2 + i) * .09;
+    d.scale.setScalar(b.s * wob * (.6 + (live.fizz + fizzBoost.v) * .7));
+    d.updateMatrix();
+    W.bubbles.setMatrixAt(i, d.matrix);
+  }
+  W.bubbles.instanceMatrix.needsUpdate = true;
+  var fizz = live.fizz + fizzBoost.v;
+  W.bubbleMat.opacity = .09 + fizz * .16;
+
+  W.specks.rotation.y = elapsed * .022;
+  W.specks.position.x = live.canX * .6;
+  W.speckMat.opacity = .16 + fizz * .4;
+
+  W.renderer.render(W.scene, cam);
+  if (currentAct === 1) layoutHotspots();
+}
+
+/* ============================================================================
+   7. Input
+   ========================================================================== */
+function bindPointer() {
+  addEventListener('pointermove', function (ev) {
+    pointer.tx = (ev.clientX / innerWidth - .5) * 2;
+    pointer.ty = (ev.clientY / innerHeight - .5) * 2;
+  }, { passive: true });
+
+  var interactive = 'a,button,input,textarea,select,label,.card,.modal,.drawer,.flavor,.scrim';
+  addEventListener('pointerdown', function (ev) {
+    if (ev.button !== 0 && ev.pointerType === 'mouse') return;
+    if (ev.target.closest && ev.target.closest(interactive)) return;
+    if ($('#preload') && !$('#preload').classList.contains('gone')) return;
+    drag.on = true; drag.x = ev.clientX; drag.vel = 0;
+    document.body.classList.add('dragging');
+  });
+  addEventListener('pointermove', function (ev) {
+    if (!drag.on) return;
+    var dx = ev.clientX - drag.x;
+    drag.x = ev.clientX;
+    drag.spin += dx * .006;
+    drag.vel = dx * .32;
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (t) {
+    addEventListener(t, function () {
+      if (!drag.on) return;
+      drag.on = false;
+      document.body.classList.remove('dragging');
+    });
+  });
+}
+
+/* Custom cursor. Fine pointers only — it is a liability on touch. */
+function bindCursor() {
+  if (!FINE || REDUCED) return;
+  var ring = $('#cursor'), dot = $('#cursor-dot'), lbl = $('.cl', ring);
+  document.body.classList.add('cursor-on');
+  var rx = innerWidth / 2, ry = innerHeight / 2, tx = rx, ty = ry;
+  addEventListener('pointermove', function (e) { tx = e.clientX; ty = e.clientY; }, { passive: true });
+  (function loop() {
+    requestAnimationFrame(loop);
+    rx = lerp(rx, tx, .16); ry = lerp(ry, ty, .16);
+    ring.style.transform = 'translate(' + rx + 'px,' + ry + 'px)';
+    dot.style.transform  = 'translate(' + tx + 'px,' + ty + 'px)';
+  })();
+  addEventListener('pointerover', function (e) {
+    var t = e.target.closest && e.target.closest('a,button,[data-cursor],.card,.flavor');
+    if (t) {
+      ring.classList.add('grow');
+      lbl.textContent = t.getAttribute('data-cursor') || '';
+    } else {
+      ring.classList.remove('grow');
+      lbl.textContent = '';
+    }
+  });
+}
+
+/* ============================================================================
+   8. Flavor system — one click re-tunes the whole page
+   ========================================================================== */
+var themeTween = null;
+
+function hex2rgb(h) {
+  var n = parseInt(h.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function rgb2hex(c) {
+  return '#' + ((1 << 24) + (c[0] << 16) + (c[1] << 8) + c[2]).toString(16).slice(1);
+}
+function mixRgb(a, b, t) {
+  return [Math.round(a[0] + (b[0] - a[0]) * t),
+          Math.round(a[1] + (b[1] - a[1]) * t),
+          Math.round(a[2] + (b[2] - a[2]) * t)];
+}
+function rgba(hex, a) {
+  var c = hex2rgb(hex);
+  return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')';
+}
+
+function paintTheme(from, to, dur) {
+  var root = document.documentElement;
+  var a0 = hex2rgb(from.accent), a1 = hex2rgb(to.accent);
+  var d0 = hex2rgb(from.deep),   d1 = hex2rgb(to.deep);
+  var prox = { t: 0 };
+  if (themeTween) themeTween.kill();
+  var apply = function () {
+    var ah = rgb2hex(mixRgb(a0, a1, prox.t));
+    root.style.setProperty('--accent', ah);
+    root.style.setProperty('--accent-deep', rgb2hex(mixRgb(d0, d1, prox.t)));
+    root.style.setProperty('--accent-glow', rgba(ah, .28));
+  };
+  if (!window.gsap || dur === 0) { prox.t = 1; apply(); return; }
+  themeTween = gsap.to(prox, { t: 1, duration: dur, ease: 'power2.inOut', onUpdate: apply });
+}
+
+function applyFlavorCopy(f) {
+  $('#flavor-note').textContent = f.copy;
+  $('#t-ph').textContent = f.tasting.ph;
+  $('#t-sw').textContent = f.tasting.sw;
+  $('#t-fn').textContent = f.tasting.fn;
+  $('#m-ph').style.width = f.tasting.mph + '%';
+  $('#m-sw').style.width = f.tasting.msw + '%';
+  $('#m-fn').style.width = f.tasting.mfn + '%';
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', f.deep);
+  $$('#flavor-list .flavor').forEach(function (b, i) {
+    b.setAttribute('aria-selected', i === flavorIndex ? 'true' : 'false');
+  });
+}
+
+var switching = false;
+function setFlavor(i, instant) {
+  if (i === flavorIndex && !instant) return;
+  if (switching) return;
+  var prev = FLAVORS[flavorIndex];
+  flavorIndex = i;
+  var f = F();
+  applyFlavorCopy(f);
+  paintTheme(prev, f, instant ? 0 : 1.05);
+
+  if (!W) return;                      /* theme already repainted above */
+  if (instant || !window.gsap || REDUCED) {
+    var t = drawLabel(f);
+    W.printed.map.dispose(); W.printed.map = t; W.printed.needsUpdate = true;
+    W.liquid.material.color.set(f.liquid);
+    W.lights.rim.color.set(f.rim);
+    W.lights.fill.color.set(f.fill);
+    W.speckMat.color.set(f.accent);
+    return;
+  }
+
+  /* Choreographed swap: the can turns away, changes clothes mid-spin, and
+     comes back. Nobody sees the texture pop. */
+  switching = true;
+  var half = false;
+  gsap.to(drag, {
+    spin: drag.spin + Math.PI * 2,
+    duration: 1.15,
+    ease: 'power3.inOut',
+    onUpdate: function () {
+      if (!half && this.progress() > .42) {
+        half = true;
+        var tex = drawLabel(f);
+        W.printed.map.dispose();
+        W.printed.map = tex;
+        W.printed.needsUpdate = true;
+      }
+    },
+    onComplete: function () { switching = false; }
+  });
+  gsap.to(W.liquid.material.color,   { r: new THREE.Color(f.liquid).r, g: new THREE.Color(f.liquid).g, b: new THREE.Color(f.liquid).b, duration: 1.05, ease: 'power2.inOut' });
+  gsap.to(W.lights.rim.color,        { r: new THREE.Color(f.rim).r,    g: new THREE.Color(f.rim).g,    b: new THREE.Color(f.rim).b,    duration: 1.05, ease: 'power2.inOut' });
+  gsap.to(W.lights.fill.color,       { r: new THREE.Color(f.fill).r,   g: new THREE.Color(f.fill).g,   b: new THREE.Color(f.fill).b,   duration: 1.05, ease: 'power2.inOut' });
+  gsap.to(W.speckMat.color,          { r: new THREE.Color(f.accent).r, g: new THREE.Color(f.accent).g, b: new THREE.Color(f.accent).b, duration: 1.05, ease: 'power2.inOut' });
+  gsap.fromTo(fizzBoost, { v: 0 }, { v: .85, duration: .5, yoyo: true, repeat: 1, ease: 'power2.out' });
+}
+
+function buildFlavorList() {
+  var ul = $('#flavor-list');
+  FLAVORS.forEach(function (f, i) {
+    var li = document.createElement('li');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'flavor';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    b.setAttribute('data-cursor', 'Taste');
+    b.innerHTML =
+      '<span class="swatch" style="background:' + f.accent + '"></span>' +
+      '<span class="fname">' + f.name + '</span>' +
+      '<span class="fnote">' + f.note + '</span>';
+    b.addEventListener('click', function () { setFlavor(i); });
+    li.appendChild(b);
+    ul.appendChild(li);
+  });
+}
+
+/* ============================================================================
+   9. Cart, contact, toast
+   ========================================================================== */
+var PRICE = 18;
+var cart = {};
+try { cart = JSON.parse(localStorage.getItem('ds-cart') || '{}') || {}; } catch (e) { cart = {}; }
+
+function saveCart() { try { localStorage.setItem('ds-cart', JSON.stringify(cart)); } catch (e) {} }
+
+function cartCount() {
+  var n = 0; for (var k in cart) n += cart[k];
+  return n;
+}
+
+function renderCart() {
+  var body = $('#cart-body'), foot = $('#cart-foot'), n = cartCount();
+  var badge = $('#cart-count');
+  badge.textContent = n;
+  badge.hidden = n === 0;
+
+  if (!n) {
+    body.innerHTML = '<p class="empty">Nothing in here yet.<br>A case is twelve cans, &pound;18.</p>';
+    foot.innerHTML = '<button class="btn" type="button" id="cart-browse" style="width:100%">Choose a flavour</button>';
+    $('#cart-browse').addEventListener('click', function () { closeAll(); go('#flavors'); });
+    return;
+  }
+
+  var html = '';
+  FLAVORS.forEach(function (f, i) {
+    if (!cart[f.key]) return;
+    html +=
+      '<div class="line-item">' +
+        '<span class="li-chip" style="--c1:' + f.accent + ';--c2:' + f.labelB + '"></span>' +
+        '<div><div class="li-name">' + f.name + '</div><div class="li-sub">' + f.note + ' &middot; 12 cans</div></div>' +
+        '<div class="qty"><button type="button" data-dec="' + i + '" aria-label="One fewer case of ' + f.name + '">&minus;</button>' +
+        '<span>' + cart[f.key] + '</span>' +
+        '<button type="button" data-inc="' + i + '" aria-label="One more case of ' + f.name + '">+</button></div>' +
+      '</div>';
+  });
+  body.innerHTML = html;
+
+  var total = n * PRICE;
+  var ship = total >= 30 ? 'Free' : '&pound;3.90';
+  foot.innerHTML =
+    '<div class="total-row"><span>Shipping</span><span>' + ship + '</span></div>' +
+    '<div class="total-row"><span>Total</span><b>&pound;' + (total + (total >= 30 ? 0 : 3.9)).toFixed(2) + '</b></div>' +
+    '<button class="btn solid" type="button" id="checkout" style="width:100%">Checkout</button>';
+
+  $$('[data-dec]', body).forEach(function (b) {
+    b.addEventListener('click', function () { addToCart(+b.dataset.dec, -1, true); });
+  });
+  $$('[data-inc]', body).forEach(function (b) {
+    b.addEventListener('click', function () { addToCart(+b.dataset.inc, 1, true); });
+  });
+  $('#checkout').addEventListener('click', function () {
+    toast('Checkout is a demo on this build');
+  });
+}
+
+function addToCart(i, delta, quiet) {
+  var f = FLAVORS[i];
+  cart[f.key] = Math.max(0, (cart[f.key] || 0) + delta);
+  if (!cart[f.key]) delete cart[f.key];
+  saveCart();
+  renderCart();
+  if (!quiet) toast(delta > 0 ? f.name + ' — case added' : f.name + ' removed');
+  var badge = $('#cart-count');
+  if (window.gsap && !REDUCED && delta > 0) {
+    gsap.fromTo(badge, { scale: 1 }, { scale: 1.55, duration: .18, yoyo: true, repeat: 1, ease: 'power2.out' });
+  }
+}
+
+var toastT;
+function toast(msg) {
+  var t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(function () { t.classList.remove('on'); }, 2600);
+}
+
+/* ---- overlay plumbing ---------------------------------------------------- */
+var lastFocus = null;
+function openPanel(el) {
+  lastFocus = document.activeElement;
+  $('#scrim').classList.add('on');
+  el.classList.add('on');
+  el.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('is-locked');
+  var f = el.querySelector('input,button,textarea');
+  if (f) setTimeout(function () { f.focus(); }, 340);
+}
+function closeAll() {
+  $('#scrim').classList.remove('on');
+  ['#cart', '#contact'].forEach(function (s) {
+    var el = $(s);
+    el.classList.remove('on');
+    el.setAttribute('aria-hidden', 'true');
+  });
+  document.body.classList.remove('is-locked');
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+
+function go(hash) {
+  var el = $(hash);
+  if (!el) return;
+  var y = el.getBoundingClientRect().top + scrollY;
+  scrollTo({ top: y, behavior: REDUCED ? 'auto' : 'smooth' });
+}
+
+function bindUI() {
+  $('#yr').textContent = new Date().getFullYear();
+
+  $('#open-cart').addEventListener('click', function () { renderCart(); openPanel($('#cart')); });
+  ['#head-buy', '#hero-buy', '#final-buy'].forEach(function (s) {
+    $(s).addEventListener('click', function () { addToCart(flavorIndex, 1); renderCart(); openPanel($('#cart')); });
+  });
+  $('#add-current').addEventListener('click', function () { addToCart(flavorIndex, 1); });
+  $('#open-contact').addEventListener('click', function () { openPanel($('#contact')); });
+  $('#foot-contact').addEventListener('click', function (e) { e.preventDefault(); openPanel($('#contact')); });
+  $('#scrim').addEventListener('click', closeAll);
+  $$('[data-close]').forEach(function (b) { b.addEventListener('click', closeAll); });
+  addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+    if (e.key === 'ArrowRight' && !$('#cart').classList.contains('on')) setFlavor((flavorIndex + 1) % FLAVORS.length);
+    if (e.key === 'ArrowLeft'  && !$('#cart').classList.contains('on')) setFlavor((flavorIndex + FLAVORS.length - 1) % FLAVORS.length);
+  });
+
+  /* in-page links scroll rather than jump */
+  $$('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var h = a.getAttribute('href');
+      if (h.length < 2) return;
+      e.preventDefault();
+      closeAll();
+      go(h);
+    });
+  });
+
+  /* contact form — validated client side, no endpoint on this build */
+  var form = $('#contact-form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = true;
+    var name = $('#cf-name').value.trim();
+    var mail = $('#cf-email').value.trim();
+    var msg  = $('#cf-msg').value.trim();
+    $('#e-name').textContent  = name ? '' : (ok = false, 'Tell us who you are');
+    $('#e-email').textContent = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail) ? '' : (ok = false, 'A working email, please');
+    $('#e-msg').textContent   = msg.length >= 8 ? '' : (ok = false, 'A little more detail');
+    if (!ok) return;
+    $('#contact-note').textContent = 'Thanks, ' + name.split(' ')[0] + '. We answer within a day.';
+    form.reset();
+    setTimeout(function () { closeAll(); $('#contact-note').textContent = ''; }, 1900);
+  });
+
+  /* card tilt — small, and only where a real pointer exists */
+  if (FINE && !REDUCED) {
+    $$('[data-tilt]').forEach(function (c) {
+      c.addEventListener('pointermove', function (e) {
+        var r = c.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - .5;
+        var py = (e.clientY - r.top) / r.height - .5;
+        c.style.transform = 'perspective(760px) rotateY(' + (px * 7).toFixed(2) + 'deg) rotateX(' + (-py * 7).toFixed(2) + 'deg) translateZ(9px)';
+      });
+      c.addEventListener('pointerleave', function () { c.style.transform = ''; });
+    });
+  }
+
+  /* magnetic buttons */
+  if (FINE && !REDUCED) {
+    $$('.btn').forEach(function (b) {
+      b.addEventListener('pointermove', function (e) {
+        var r = b.getBoundingClientRect();
+        b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .22).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * .3).toFixed(1) + 'px)';
+      });
+      b.addEventListener('pointerleave', function () { b.style.transform = ''; });
+    });
+  }
+}
+
+/* ============================================================================
+   10. Scroll choreography
+   ========================================================================== */
+function revealAll() {
+  $$('.reveal>span').forEach(function (s) { s.style.transform = 'none'; });
+}
+
+function setupScroll() {
+  var sections = $$('section[data-act]');
+  var railItems = $$('.rail-item');
+  var navLinks = $$('.nav a');
+
+  if (!window.gsap || !window.ScrollTrigger) { revealAll(); $('#rail').classList.add('show'); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* start state lives here, not in CSS, so GSAP owns the property outright */
+  gsap.set('.reveal>span', { yPercent: REDUCED ? 0 : 105 });
+
+  sections.forEach(function (sec, n) {
+    var act = +sec.dataset.act;
+
+    /* pose */
+    ScrollTrigger.create({
+      trigger: sec,
+      start: sec.classList.contains('tall') ? 'top 80%' : 'top 58%',
+      end: sec.classList.contains('tall') ? 'bottom 60%' : 'bottom 42%',
+      onEnter:     function () { setAct(act); markRail(n); },
+      onEnterBack: function () { setAct(act); markRail(n); }
+    });
+
+    /* copy reveals — the hero's are owned by the intro timeline */
+    var lines = sec.id === 'home' ? [] : $$('.reveal>span', sec);
+    if (lines.length) {
+      ScrollTrigger.create({
+        trigger: sec,
+        start: 'top 78%',
+        once: true,
+        onEnter: function () {
+          gsap.to(lines, { yPercent: 0, duration: 1.15, ease: 'expo.out', stagger: .075 });
         }
+      });
+    }
 
-        function selectCard(index) {
-            if (isSwitching || !cards.length) return;
-            const target = cards[((index % cards.length) + cards.length) % cards.length];
-            if (!target || target.classList.contains('active')) return;
-            cards.forEach(c => c.classList.remove('active'));
-            target.classList.add('active');
-            switchFlavor(target.dataset.flavor);
-        }
-
-        cards.forEach((card, i) => {
-            card.addEventListener('click', () => selectCard(i));
+    /* section furniture fades up */
+    var extras = $$('.spec-strip,.parts,.card-row,.stat-grid,.tasting,.flavor-list,.hero-cta', sec);
+    if (extras.length && !REDUCED) {
+      gsap.fromTo(extras,
+        { y: 34, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: .1,
+          clearProps: 'transform',
+          scrollTrigger: { trigger: sec, start: 'top 68%', once: true }
         });
+    }
+  });
 
-        // Carousel arrows step through the flavors, wrapping at both ends
-        navArrows.forEach((arrow, i) => {
-            arrow.addEventListener('click', () => {
-                selectCard(activeCardIndex() + (i === 0 ? -1 : 1));
-            });
+  function markRail(n) {
+    railItems.forEach(function (r, i) { r.classList.toggle('on', i === n); });
+    var id = sections[n] ? sections[n].id : '';
+    navLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    $('#hotspots').classList.toggle('show', n === 1 && !isPhone());
+  }
+
+  /* the teardown is the one thing keyed directly to scroll position */
+  ScrollTrigger.create({
+    trigger: '#anatomy',
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: true,
+    onUpdate: function (self) {
+      var e = clamp((self.progress - .12) / .56, 0, 1);
+      scrubExplode = e;
+      var lit = Math.min(4, Math.floor(e * 5.4));
+      $$('#parts li').forEach(function (li, i) {
+        li.classList.toggle('on', e > .02 && i <= lit);
+      });
+    }
+  });
+
+  /* counters */
+  ScrollTrigger.create({
+    trigger: '#proof',
+    start: 'top 70%',
+    once: true,
+    onEnter: function () {
+      $$('#proof [data-count]').forEach(function (v) {
+        var target = +v.dataset.count;
+        var out = $('[data-num]', v);
+        if (!target) { out.textContent = '0'; return; }
+        var o = { n: 0 };
+        gsap.to(o, {
+          n: target, duration: 1.9, ease: 'power3.out',
+          onUpdate: function () { out.textContent = Math.round(o.n); }
         });
+      });
+    }
+  });
 
-        async function switchFlavor(flavor) {
-            if (isSwitching) return;
-            isSwitching = true;
-            const body = document.body;
-            const berries = document.querySelectorAll('.berry');
-            const heroCenter = document.querySelector('.hero-center');
+  markRail(0);
+}
 
-            // 1. Background Animation
-            const targetColors = flavor === 'blue' ?
-                { inner: '#0b4f8a', mid: '#04294e', outer: '#010c14' } :
-                { inner: '#0b8a78', mid: '#044e3b', outer: '#011411' };
+/* Header and rail chrome ride a plain scroll listener — cheaper and more
+   predictable than a trigger-less ScrollTrigger. */
+function setupChrome() {
+  var header = $('#header'), rail = $('#rail'), ticking = false;
+  function read() {
+    ticking = false;
+    header.classList.toggle('solid', scrollY > 60);
+    rail.classList.toggle('show', scrollY > innerHeight * .55);
+  }
+  addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(read); }
+  }, { passive: true });
+  read();
+}
 
-            gsap.to(body, {
-                '--bg-inner': targetColors.inner,
-                '--bg-mid': targetColors.mid,
-                '--bg-outer': targetColors.outer,
-                duration: 1.5,
-                ease: 'power2.inOut'
-            });
+/* ============================================================================
+   11. Boot
+   ========================================================================== */
+function resize() {
+  if (!W) return;
+  W.camera.aspect = innerWidth / innerHeight;
+  W.camera.updateProjectionMatrix();
+  W.renderer.setSize(innerWidth, innerHeight, false);
+  W.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isPhone() ? 1.6 : 2));
+  POSES = actPoses();
+  setAct(currentAct);
+  if (window.ScrollTrigger) ScrollTrigger.refresh();
+}
 
-            // 2. Can Spin Animation (Simple 360 spin + blur with back settle)
-            const spinObj = { val: 0, blur: 0 };
-            gsap.to(spinObj, {
-                val: 360,
-                blur: 15,
-                duration: 0.6,
-                ease: "power2.in",
-                onUpdate: () => {
-                    switchSpin = spinObj.val;
-                    modelViewer.style.filter = `blur(${spinObj.blur}px)`;
-                },
-                onComplete: async () => {
-                    // SWAP at peak
-                    if (flavor === 'blue') {
-                        body.classList.add('blue-theme');
-                        if (modelViewer.model && blueTexture) {
-                            modelViewer.model.materials.forEach(material => {
-                                if (material.pbrMetallicRoughness.baseColorTexture) {
-                                    material.pbrMetallicRoughness.baseColorTexture.setTexture(blueTexture);
-                                }
-                            });
-                        }
-                    } else {
-                        body.classList.remove('blue-theme');
-                        if (modelViewer.model && greenTexture) {
-                            modelViewer.model.materials.forEach(material => {
-                                if (material.pbrMetallicRoughness.baseColorTexture) {
-                                    material.pbrMetallicRoughness.baseColorTexture.setTexture(greenTexture);
-                                }
-                            });
-                        }
-                    }
+var prog = 0;
+function setProgress(p, label) {
+  prog = Math.max(prog, p);
+  $('#pre-fill').style.width = prog + '%';
+  $('#pre-pct').textContent = String(Math.round(prog)).padStart(2, '0');
+  if (label) $('#pre-state').textContent = label;
+}
 
-                    gsap.to(spinObj, {
-                        val: 720,
-                        blur: 0,
-                        duration: 1.5,
-                        ease: "back.out(0.7)",
-                        onUpdate: () => {
-                            switchSpin = spinObj.val;
-                            modelViewer.style.filter = `blur(${spinObj.blur}px)`;
-                        },
-                        onComplete: () => {
-                            switchSpin = 0;
-                            modelViewer.style.filter = 'none';
-                        }
-                    });
-                }
-            });
+function intro() {
+  var pre = $('#preload');
+  pre.classList.add('gone');
 
-            // 3. Berries "Hide & Reveal" with Dynamic Positioning
-            if (!berries.length) {
-                isSwitching = false;
-                return;
-            }
+  if (!window.gsap || REDUCED) {
+    pre.style.display = 'none';
+    $('.bar-t').style.display = $('.bar-b').style.display = 'none';
+    revealAll();
+    $('#header').style.opacity = 1;
+    return;
+  }
 
-            // One master timeline owns the lock, so isSwitching is released
-            // even if an individual berry's callback throws.
-            const berryMaster = gsap.timeline({
-                onComplete: () => {
-                    isSwitching = false;
-                }
-            });
+  var tl = gsap.timeline();
+  tl.to('#pre-fill', { width: '100%', duration: .45, ease: 'power2.inOut' })
+    .to('.pre-word span', { yPercent: -110, duration: .8, ease: 'expo.inOut', stagger: .05 }, '-=.15')
+    .to(['.pre-sub', '.pre-meter', '.pre-track'], { opacity: 0, duration: .35 }, '<')
+    .to('#preload', { opacity: 0, duration: .6, ease: 'power2.inOut', onComplete: function () { pre.style.display = 'none'; } }, '-=.3')
+    /* letterbox retracts — the beat that hands the frame over to the product */
+    .to(['.bar-t', '.bar-b'], { height: 0, duration: 1.15, ease: 'expo.inOut' }, '-=.35')
+    .fromTo(introOff, { z: 9, s: -.24 }, { z: 0, s: 0, duration: 2, ease: 'expo.out' }, '-=1.15')
+    .to('#home .reveal>span', { yPercent: 0, duration: 1.25, ease: 'expo.out', stagger: .08 }, '-=1.5')
+    .fromTo('#header', { yPercent: -110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: 'expo.out', clearProps: 'opacity' }, '-=1.1')
+    .fromTo('.scroll-hint', { opacity: 0 }, { opacity: 1, duration: .7 }, '-=.5');
+}
 
-            berries.forEach((berry, i) => {
-                const bW = berry.offsetWidth / 2;
-                const bH = berry.offsetHeight / 2;
-                const centerX = (window.innerWidth / 2 - berry.offsetLeft - bW);
-                const centerY = (window.innerHeight / 2 - berry.offsetTop - bH);
+function fallback2D() {
+  /* No WebGL: the page still has to be a real page. */
+  $('#stage').style.display = 'none';
+  document.documentElement.style.setProperty('--accent-glow', rgba(F().accent, .28));
+  $('#wash').style.background =
+    'radial-gradient(120% 90% at 50% 42%, ' + F().deep + ' 0%, transparent 62%), var(--ink)';
+}
 
-                const startAngle = parseFloat(berry.dataset.angle) || 0;
-                const currentBaseX = parseFloat(berry.dataset.baseX) || 0;
-                const currentBaseY = parseFloat(berry.dataset.baseY) || 0;
+/* Google Fonts only fetches a face once something uses it, and the can label
+   is drawn on a canvas — which does not count. Ask for them explicitly. */
+function loadFaces() {
+  if (!document.fonts || !document.fonts.load) return Promise.resolve();
+  var want = ['300px Galada', '500 44px "JetBrains Mono"', '400 30px "JetBrains Mono"', '400 40px "Instrument Serif"'];
+  return Promise.all(want.map(function (f) {
+    return document.fonts.load(f).catch(function () {});
+  })).then(function () { return document.fonts.ready; });
+}
 
-                // New random target position - Increased range for visibility
-                const nextBaseX = (Math.random() - 0.5) * 200;
-                const nextBaseY = (Math.random() - 0.5) * 200;
+function boot() {
+  buildFlavorList();
+  applyFlavorCopy(F());
+  bindUI();
+  renderCart();
+  if (window.gsap && !REDUCED) {
+    gsap.set('.pre-word span', { yPercent: 110 });
+    gsap.to('.pre-word span', { yPercent: 0, duration: 1, ease: 'expo.out', stagger: .07 });
+    gsap.to('.pre-sub', { opacity: 1, duration: .8, delay: .35 });
+  }
+  setProgress(12, 'Reading the brief');
 
-                gsap.set(berry, {
-                    rotation: startAngle,
-                    x: currentBaseX,
-                    y: currentBaseY
-                });
+  var canGo = hasGL && window.THREE;
+  if (canGo) {
+    try {
+      setProgress(30, 'Building the studio');
+      W = buildWorld();
+      clock = new THREE.Clock();
+      setProgress(62, 'Drawing the pack');
+      buildHotspots();
+      setAct(0);
+      live.camZ = POSES[0].camZ;
+      live.scale = POSES[0].scale;
+      Object.assign(live, POSES[0]);
+      bindPointer();
+      bindCursor();
+      requestAnimationFrame(frame);
+      setProgress(80, 'Chilling to 3 °C');
+    } catch (err) {
+      W = null;
+      canGo = false;
+      if (window.console) console.warn('3D unavailable:', err);
+    }
+  }
+  if (!canGo) { fallback2D(); bindCursor(); }
 
-                const berryTl = gsap.timeline();
+  setupScroll();
+  setupChrome();
+  addEventListener('resize', resize, { passive: true });
+  addEventListener('orientationchange', function () { setTimeout(resize, 250); });
 
-                berryTl.to(berry, {
-                    x: centerX,
-                    y: centerY,
-                    rotation: startAngle + 45,
-                    scale: 0.1,
-                    opacity: 0,
-                    duration: 0.5,
-                    ease: "power2.in",
-                    onComplete: () => {
-                        try {
-                            berry.src = flavor === 'blue'
-                                ? 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/blueberry.glb'
-                                : 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb';
-                        } catch (e) {
-                            console.error("Berry model swap failed", e);
-                        }
-                        heroCenter.style.zIndex = 50;
-                    }
-                })
-                    .to(berry, {
-                        duration: 0.3
-                    })
-                    .to(berry, {
-                        onStart: () => {
-                            heroCenter.style.zIndex = 1;
-                        },
-                        x: nextBaseX,
-                        y: nextBaseY,
-                        rotation: startAngle + 90,
-                        scale: 1,
-                        opacity: 1,
-                        duration: 0.9,
-                        ease: "back.out(1.5)",
-                        onComplete: () => {
-                            berry.dataset.angle = startAngle + 90;
-                            berry.dataset.baseX = nextBaseX;
-                            berry.dataset.baseY = nextBaseY;
-                            berry.dataset.rx = 0;
-                            berry.dataset.ry = 0;
-                        }
-                    });
+  var started = false;
+  var start = function () {
+    if (started) return;
+    started = true;
+    setProgress(100, 'Ready');
+    setTimeout(intro, 140);
+  };
 
-                berryMaster.add(berryTl, 0);
-            });
-        }
+  loadFaces().then(function () {
+    setProgress(94, 'Setting type');
+    /* the label is drawn with real type, so it is redrawn once the faces land */
+    if (W) {
+      var t = drawLabel(F());
+      W.printed.map.dispose();
+      W.printed.map = t;
+      W.printed.needsUpdate = true;
+    }
+    start();
+  }).catch(start);
+  setTimeout(start, 4500);   /* never hold the page hostage to a font */
+}
 
+function safeBoot() {
+  try {
+    boot();
+  } catch (err) {
+    if (window.console) console.error('Diet Soda: boot failed, serving the flat page.', err);
+    var pre = document.getElementById('preload');
+    if (pre) pre.style.display = 'none';
+    var t = document.querySelector('.bar-t'), bb = document.querySelector('.bar-b');
+    if (t) t.style.display = 'none';
+    if (bb) bb.style.display = 'none';
+    var st = document.getElementById('stage');
+    if (st) st.style.display = 'none';
+    Array.prototype.forEach.call(document.querySelectorAll('.reveal>span'), function (n) {
+      n.style.transform = 'none';
+    });
+  }
+}
 
-        // Track berry states for smoothing
-        allBerries.forEach(b => {
-            b.dataset.rx = 0; b.dataset.ry = 0; b.dataset.angle = Math.random() * 360;
-            b.dataset.baseX = 0; b.dataset.baseY = 0;
-            b.dataset.targetRx = 0; b.dataset.targetRy = 0;
-        });
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', safeBoot);
+} else {
+  safeBoot();
+}
 
-        let mouse = { x: 0, y: 0, px: 0, py: 0 };
-        let currentMouse = { x: 0, y: 0 };
-
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = (e.clientX / window.innerWidth) - 0.5;
-            mouse.y = (e.clientY / window.innerHeight) - 0.5;
-            mouse.px = e.clientX;
-            mouse.py = e.clientY;
-        });
-
-        function animate() {
-            const time = Date.now() * 0.001;
-            // Target camera position based on mouse
-            // Smoothly interpolate current mouse to target mouse
-            currentMouse.x += (mouse.x - currentMouse.x) * 0.05;
-            currentMouse.y += (mouse.y - currentMouse.y) * 0.05;
-
-            // Tilt the product can + add switch spin
-            modelViewer.cameraOrbit = `${(currentMouse.x * 40) + switchSpin}deg ${90 + (currentMouse.y * 20)}deg 380%`;
-
-            // Update parallax containers - Always
-            berriesFG.style.transform = `translate(${currentMouse.x * 60}px, ${currentMouse.y * 60}px)`;
-            berriesBG.style.transform = `translate(${currentMouse.x * -30}px, ${currentMouse.y * -30}px)`;
-            leavesBG.style.transform = `translate(${currentMouse.x * -15}px, ${currentMouse.y * -15}px)`;
-
-            // Update each berry with its own smoothing and float - ONLY IF NOT SWITCHING
-            if (!isSwitching) {
-                allBerries.forEach((berry, i) => {
-                    const berryRect = berry.getBoundingClientRect();
-                    const berryX = berryRect.left + berryRect.width / 2;
-                    const berryY = berryRect.top + berryRect.height / 2;
-
-                    const diffX = mouse.px - berryX;
-                    const diffY = mouse.py - berryY;
-                    const distance = Math.sqrt(diffX * diffX + diffY * diffY);
-
-                    let targetRx = 0, targetRy = 0, speedMult = 1;
-
-                    if (distance < 400) {
-                        const force = (400 - distance) / 400;
-                        targetRx = (diffX / distance) * force * -80;
-                        targetRy = (diffY / distance) * force * -80;
-                        speedMult = 1 + force * 5;
-                    }
-
-                    // Lerp repulsion values
-                    let rx = parseFloat(berry.dataset.rx) || 0;
-                    let ry = parseFloat(berry.dataset.ry) || 0;
-                    let angle = parseFloat(berry.dataset.angle) || 0;
-                    let baseX = parseFloat(berry.dataset.baseX) || 0;
-                    let baseY = parseFloat(berry.dataset.baseY) || 0;
-
-                    rx += (targetRx - rx) * 0.1;
-                    ry += (targetRy - ry) * 0.1;
-                    angle += 0.2 * speedMult;
-
-                    berry.dataset.rx = rx;
-                    berry.dataset.ry = ry;
-                    berry.dataset.angle = angle;
-
-                    // Floating effect
-                    const dur = [5, 7, 6, 8, 5.5, 6.5, 9, 11, 10][i % 9];
-                    const phase = (time + i * 0.7) * (Math.PI * 2 / dur);
-                    const floatY = Math.sin(phase) * 15;
-                    const floatAngle = Math.cos(phase) * 6;
-
-                    berry.style.transform = `translate(calc(${rx + baseX}px), calc(${ry + baseY}px + ${floatY}px)) rotate(calc(${angle}deg + ${floatAngle}deg))`;
-                });
-            }
-
-            // Update leaves with float - ALWAYS
-            document.querySelectorAll('.leaf').forEach((leaf, i) => {
-                const dur = 10 + i * 2;
-                const phase = (time + i * 1.2) * (Math.PI * 2 / dur);
-                const floatY = Math.sin(phase) * 20;
-                const floatX = Math.cos(phase * 0.5) * 15;
-                const floatAngle = Math.sin(phase * 0.3) * 15;
-                leaf.style.transform = `translate(${floatX}px, ${floatY}px) rotate(${floatAngle}deg)`;
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        // Bubbles Generator using bubble.png
-        const bubblesContainer = document.getElementById('bubbles-container');
-        function createBubble() {
-            if (!bubblesContainer) return;
-            const bubble = document.createElement('img');
-            bubble.src = 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/bubble.png';
-            bubble.className = 'bubble-img';
-            const size = Math.random() * 20 + 10 + 'px';
-            bubble.style.width = size;
-            bubble.style.height = 'auto';
-            bubble.style.left = Math.random() * 100 + '%';
-            bubble.style.bottom = '-50px';
-            bubble.style.opacity = Math.random() * 0.4 + 0.2;
-
-            const duration = Math.random() * 6 + 4;
-            bubble.style.animation = `floatUpImg ${duration}s linear forwards`;
-
-            bubblesContainer.appendChild(bubble);
-            setTimeout(() => bubble.remove(), duration * 1000);
-        }
-        setInterval(createBubble, 400);
-    </script>
+})();
+</script>
 </body>
-
 </html>
