@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Experience the crisp, clean taste of Diet Soda. Zero sugar, zero compromise.">
+<title>Diet Soda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;700&family=Galada&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.7);
+        --faint: rgba(255, 255, 255, 0.45);
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --accent: #fbcfe8;
+        --on-accent: #011d17;
+
+        --bg-inner: #0b8a78;
+        --bg-mid: #044e3b;
+        --bg-outer: #011411;
+
+        --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+        --font-display: 'Galada', 'Brush Script MT', cursive;
+        --font-util: 'Manrope', system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        background: radial-gradient(circle at center, var(--bg-inner) 0%, var(--bg-mid) 50%, var(--bg-outer) 100%);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 16px;
+        overflow: hidden;
+        height: 100vh;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+
+    /* ---------- 3D layers ---------- */
+    canvas.layer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        pointer-events: none;
+    }
+
+    #c-bg  { z-index: 0; }
+    #c-can { z-index: 2; opacity: 0; animation: canIn 1.1s ease-out 0.15s forwards; }
+    #c-fg  { z-index: 110; }
+
+    @keyframes canIn { to { opacity: 1; } }
+
+    /* ---------- bubbles ---------- */
+    #bubbles {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.42) 16%, rgba(255, 255, 255, 0.10) 44%, rgba(255, 255, 255, 0.26) 78%, rgba(255, 255, 255, 0.06) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.38);
+    }
+
+    @keyframes floatUp {
+        0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+        10%  { opacity: 0.4; }
+        90%  { opacity: 0.4; }
+        100% { transform: translateY(-110vh) translateX(30px) rotate(360deg); opacity: 0; }
+    }
+
+    /* ---------- header ---------- */
+    .header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 2rem 4%;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        letter-spacing: 0.01em;
+    }
+
+    .logo svg { flex: none; }
+
+    .nav {
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.4rem;
+        border-radius: 100px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-item {
+        font-family: var(--font-util);
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 100px;
+        transition: background 0.3s ease, color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .nav-item:hover { color: var(--text); background: rgba(255, 255, 255, 0.1); }
+    .nav-item.active { background: var(--accent); color: var(--on-accent); font-weight: 700; }
+
+    .contact-btn {
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        padding: 0.9rem 2rem;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .contact-btn:hover { background: rgba(0, 0, 0, 0.7); transform: translateY(-2px); }
+
+    /* ---------- hero ---------- */
+    .hero {
+        position: relative;
+        z-index: 100;
+        height: 100vh;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 2rem;
+        padding: 8rem 4% 3.5rem;
+        pointer-events: none;
+    }
+
+    .hero-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
+        max-width: 420px;
+    }
+
+    .display {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: clamp(4.5rem, 9.5vw, 11rem);
+        line-height: 0.82;
+        letter-spacing: 0.005em;
+        text-wrap: balance;
+        text-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .description {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.65;
+        max-width: 34ch;
+    }
+
+    .primary-btn {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text);
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        padding: 0.4rem 0.4rem 0.4rem 1.5rem;
+        border-radius: 100px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .primary-btn:hover { background: rgba(0, 0, 0, 0.7); transform: translateY(-3px); }
+
+    .plus-icon {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-size: 1.35rem;
+        font-weight: 900;
+        line-height: 1;
+        padding-bottom: 2px;
+    }
+
+    .award-badge {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: auto;
+    }
+
+    .award-icon {
+        width: 48px;
+        height: 48px;
+        flex: none;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+    }
+
+    .award-text { display: flex; flex-direction: column; gap: 0.15rem; }
+
+    .award-title {
+        font-family: var(--font-util);
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        color: var(--faint);
+    }
+
+    .award-subtitle { font-size: 0.85rem; font-weight: 600; }
+
+    /* ---------- right column ---------- */
+    .hero-right {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+        text-align: right;
+        gap: 2rem;
+        width: 460px;
+    }
+
+    .carousel {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 1.5rem;
+        pointer-events: auto;
+    }
+
+    .carousel-cards { display: flex; gap: 1rem; }
+
+    .card {
+        position: relative;
+        width: 138px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.4rem;
+        padding: 5rem 1rem 1rem;
+        border-radius: 28px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        text-align: center;
+        font: inherit;
+        color: inherit;
+        transition: background 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                    border-color 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .card:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4); }
+    .card.active { border-color: var(--accent); }
+
+    .card-can {
+        width: 116px;
+        height: auto;
+        margin-top: -7.5rem;
+        display: block;
+        filter: drop-shadow(0 20px 32px rgba(0, 0, 0, 0.55));
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        will-change: transform;
+        pointer-events: none;
+    }
+
+    .card:hover .card-can { transform: translateY(-26px) rotate(-12deg) scale(1.12); }
+
+    .card-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        width: 100%;
+        font-size: 0.72rem;
+    }
+
+    .card-name { font-weight: 600; letter-spacing: 0.01em; }
+    .card-meta { color: var(--faint); font-variant-numeric: tabular-nums; }
+
+    .carousel-nav { display: flex; gap: 0.75rem; }
+
+    .nav-arrow {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--text);
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .nav-arrow:hover { background: rgba(255, 255, 255, 0.14); }
+
+    .side-title { text-align: right; }
+
+    /* ---------- spec strip: real product vernacular ---------- */
+    .spec-strip {
+        display: flex;
+        gap: 2rem;
+        justify-content: flex-end;
+        font-family: var(--font-util);
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        color: var(--faint);
+    }
+
+    .spec-strip b {
+        display: block;
+        font-family: var(--font-body);
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 1100px) {
+        html, body { overflow-x: hidden; overflow-y: auto; height: auto; min-height: 100vh; }
+
+        .hero {
+            height: auto;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            padding: 7rem 6% 4rem;
+        }
+
+        .hero-left, .hero-right {
+            width: 100%;
+            max-width: 520px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .description { max-width: none; }
+        .award-badge { margin-top: 0; }
+        .carousel { align-items: center; }
+        .side-title { text-align: center; }
+        .spec-strip { justify-content: center; gap: 1.5rem; }
+        .display { font-size: clamp(3.5rem, 12vw, 6rem); }
+
+        /* the can canvas is fixed, so it stays behind the stacked column */
+        #c-can { opacity: 0; animation: canInDim 1.1s ease-out 0.15s forwards; }
+        @keyframes canInDim { to { opacity: 0.5; } }
+    }
+
+    @media (max-width: 720px) {
+        .header { padding: 1.25rem 5%; }
+        .nav { display: none; }
+        .contact-btn { padding: 0.75rem 1.4rem; }
+        .hero { padding-top: 5.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #c-can { animation: none; opacity: 1; }
+        * { transition-duration: 0.01ms !important; }
+    }
+</style>
+</head>
+<body>
+<canvas id="c-bg" class="layer" aria-hidden="true"></canvas>
+<canvas id="c-can" class="layer" aria-hidden="true"></canvas>
+<div id="bubbles" aria-hidden="true"></div>
+
+<header class="header">
+    <div class="logo">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+            <path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span>Soda</span>
+    </div>
+    <nav class="nav">
+        <a href="#" class="nav-item active">Home</a>
+        <a href="#" class="nav-item">Ingredients</a>
+        <a href="#" class="nav-item">Taste</a>
+        <a href="#" class="nav-item">Eco</a>
+        <a href="#" class="nav-item">Reviews</a>
+    </nav>
+    <button class="contact-btn" type="button">Contact Us</button>
+</header>
+
+<main class="hero">
+    <div class="hero-left">
+        <h1 class="display">Pure<br>Zero</h1>
+        <p class="description">
+            Unleash the crisp taste of zero sugar. Refreshment redefined
+            in every bubble &mdash; all in one sleek design.
+        </p>
+        <button class="primary-btn" type="button">
+            Shop Now
+            <span class="plus-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="award-badge">
+            <div class="award-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 15L15 18L19 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="award-text">
+                <span class="award-title">DESIGN AWARDS</span>
+                <span class="award-subtitle">Premium Beverage 2025</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <div class="carousel">
+            <div class="carousel-cards" id="cards">
+                <button class="card active" type="button" data-flavor="classic" aria-pressed="true">
+                    <svg class="card-can" viewBox="0 0 120 210" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="canClassic" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0" stop-color="#04463a" />
+                                <stop offset="0.18" stop-color="#0b8a78" />
+                                <stop offset="0.45" stop-color="#2fd4b4" />
+                                <stop offset="0.72" stop-color="#0b8a78" />
+                                <stop offset="1" stop-color="#03352c" />
+                            </linearGradient>
+                            <linearGradient id="lidClassic" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0" stop-color="#8e9aa0" />
+                                <stop offset="0.4" stop-color="#eef3f5" />
+                                <stop offset="1" stop-color="#7d888e" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M18 34 Q18 22 32 18 L88 18 Q102 22 102 34 L102 176 Q102 190 88 194 L32 194 Q18 190 18 176 Z" fill="url(#canClassic)" />
+                        <path d="M26 14 L94 14 Q102 16 102 24 L18 24 Q18 16 26 14 Z" fill="url(#lidClassic)" />
+                        <ellipse cx="60" cy="14" rx="34" ry="6" fill="#cfd8dc" />
+                        <ellipse cx="60" cy="13" rx="27" ry="4" fill="#98a4aa" />
+                        <path d="M22 92 Q60 112 98 92 L98 108 Q60 128 22 108 Z" fill="#ffffff" opacity="0.16" />
+                        <text x="60" y="104" font-family="Galada, cursive" font-size="27" fill="#ffffff" text-anchor="middle">Soda</text>
+                        <text x="60" y="124" font-family="Manrope, sans-serif" font-size="8.5" letter-spacing="2.6" fill="#d8fff4" text-anchor="middle">ZERO SUGAR</text>
+                        <rect x="18" y="30" width="9" height="164" fill="#ffffff" opacity="0.14" />
+                    </svg>
+                    <span class="card-info">
+                        <span class="card-name">Diet Classic</span>
+                        <span class="card-meta">$2.99 &middot; 330 ml</span>
+                    </span>
+                </button>
+
+                <button class="card" type="button" data-flavor="blue" aria-pressed="false">
+                    <svg class="card-can" viewBox="0 0 120 210" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="canBlue" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0" stop-color="#042c50" />
+                                <stop offset="0.18" stop-color="#0b4f8a" />
+                                <stop offset="0.45" stop-color="#3aa3e8" />
+                                <stop offset="0.72" stop-color="#0b4f8a" />
+                                <stop offset="1" stop-color="#031f3a" />
+                            </linearGradient>
+                            <linearGradient id="lidBlue" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0" stop-color="#8e9aa0" />
+                                <stop offset="0.4" stop-color="#eef3f5" />
+                                <stop offset="1" stop-color="#7d888e" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M18 34 Q18 22 32 18 L88 18 Q102 22 102 34 L102 176 Q102 190 88 194 L32 194 Q18 190 18 176 Z" fill="url(#canBlue)" />
+                        <path d="M26 14 L94 14 Q102 16 102 24 L18 24 Q18 16 26 14 Z" fill="url(#lidBlue)" />
+                        <ellipse cx="60" cy="14" rx="34" ry="6" fill="#cfd8dc" />
+                        <ellipse cx="60" cy="13" rx="27" ry="4" fill="#98a4aa" />
+                        <path d="M22 92 Q60 112 98 92 L98 108 Q60 128 22 108 Z" fill="#ffffff" opacity="0.16" />
+                        <text x="60" y="104" font-family="Galada, cursive" font-size="27" fill="#ffffff" text-anchor="middle">Soda</text>
+                        <text x="60" y="124" font-family="Manrope, sans-serif" font-size="8.5" letter-spacing="2.6" fill="#d6efff" text-anchor="middle">ZERO LIME</text>
+                        <rect x="18" y="30" width="9" height="164" fill="#ffffff" opacity="0.14" />
+                    </svg>
+                    <span class="card-info">
+                        <span class="card-name">Zero Lime</span>
+                        <span class="card-meta">$2.99 &middot; 330 ml</span>
+                    </span>
+                </button>
+            </div>
+            <div class="carousel-nav">
+                <button class="nav-arrow" type="button" id="prev" aria-label="Previous flavor">&larr;</button>
+                <button class="nav-arrow" type="button" id="next" aria-label="Next flavor">&rarr;</button>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="display side-title">Refreshingly<br>Clean</h2>
+            <div class="spec-strip">
+                <div>CALORIES<b>0</b></div>
+                <div>SUGARS<b>0 g</b></div>
+                <div>VOLUME<b>330 ml</b></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- foreground fruit renders above the copy -->
+<canvas id="c-fg" class="layer" aria-hidden="true"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+
+    var FLAVORS = {
+        classic: {
+            bg: { inner: '#0b8a78', mid: '#044e3b', outer: '#011411' },
+            labelA: '#16b295', labelB: '#05604e', wave: '#d8fff4',
+            rim: 0xfbcfe8, fill: 0x35e0bd, sub: 'ZERO SUGAR'
+        },
+        blue: {
+            bg: { inner: '#0b4f8a', mid: '#04294e', outer: '#010c14' },
+            labelA: '#1673c4', labelB: '#053a68', wave: '#d6efff',
+            rim: 0xfbcfe8, fill: 0x4fb2f5, sub: 'ZERO LIME'
+        }
+    };
+
+    /* ------------------------------------------------------------------
+       Can label, drawn to a canvas so nothing has to be fetched.
+    ------------------------------------------------------------------ */
+    function drawLabel(flavor) {
+        var F = FLAVORS[flavor];
+        var c = document.createElement('canvas');
+        c.width = 1024; c.height = 512;
+        var g = c.getContext('2d');
+
+        var grad = g.createLinearGradient(0, 0, 0, 512);
+        grad.addColorStop(0, F.labelB);
+        grad.addColorStop(0.42, F.labelA);
+        grad.addColorStop(1, F.labelB);
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 1024, 512);
+
+        // sweeping wave, the one graphic device on the can
+        g.save();
+        g.globalAlpha = 0.16;
+        g.fillStyle = '#ffffff';
+        g.beginPath();
+        g.moveTo(0, 300);
+        g.bezierCurveTo(256, 240, 768, 380, 1024, 300);
+        g.lineTo(1024, 400);
+        g.bezierCurveTo(768, 470, 256, 330, 0, 400);
+        g.closePath();
+        g.fill();
+        g.restore();
+
+        // two repeats so the wordmark reads from any angle
+        [256, 768].forEach(function (cx) {
+            g.textAlign = 'center';
+            g.fillStyle = '#ffffff';
+            g.font = '150px Galada, cursive';
+            g.fillText('Soda', cx, 250);
+
+            g.font = '500 26px Manrope, sans-serif';
+            g.fillStyle = F.wave;
+            g.letterSpacing = '10px';
+            g.fillText(F.sub, cx, 305);
+
+            g.font = '500 17px Manrope, sans-serif';
+            g.fillStyle = 'rgba(255,255,255,0.62)';
+            g.letterSpacing = '5px';
+            g.fillText('DIET  ·  330 ML e', cx, 352);
+
+            g.beginPath();
+            g.arc(cx, 392, 7, 0, Math.PI * 2);
+            g.fillStyle = '#fbcfe8';
+            g.fill();
+        });
+
+        // vertical specular bands
+        for (var i = 0; i < 4; i++) {
+            var x = i * 256 + 40;
+            var band = g.createLinearGradient(x, 0, x + 90, 0);
+            band.addColorStop(0, 'rgba(255,255,255,0)');
+            band.addColorStop(0.5, 'rgba(255,255,255,0.13)');
+            band.addColorStop(1, 'rgba(255,255,255,0)');
+            g.fillStyle = band;
+            g.fillRect(x, 0, 90, 512);
+        }
+
+        var tex = new THREE.CanvasTexture(c);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.anisotropy = 8;
+        tex.encoding = THREE.sRGBEncoding;
+        return tex;
+    }
+
+    /* ------------------------------------------------------------------
+       Renderer / environment helpers
+    ------------------------------------------------------------------ */
+    function makeRenderer(canvas) {
+        var r = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        r.setPixelRatio(DPR);
+        r.outputEncoding = THREE.sRGBEncoding;
+        r.toneMapping = THREE.ACESFilmicToneMapping;
+        r.toneMappingExposure = 0.92;
+        return r;
+    }
+
+    // A soft studio environment, generated rather than loaded.
+    function makeEnv(renderer) {
+        var c = document.createElement('canvas');
+        c.width = 512; c.height = 256;
+        var g = c.getContext('2d');
+        var sky = g.createLinearGradient(0, 0, 0, 256);
+        sky.addColorStop(0, '#ffffff');
+        sky.addColorStop(0.42, '#c9d2d4');
+        sky.addColorStop(0.62, '#3b4547');
+        sky.addColorStop(1, '#0a0d0e');
+        g.fillStyle = sky;
+        g.fillRect(0, 0, 512, 256);
+        // two soft key sources for believable metal highlights
+        [[130, 70, 70], [370, 96, 46]].forEach(function (s) {
+            var glow = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]);
+            glow.addColorStop(0, 'rgba(255,255,255,0.95)');
+            glow.addColorStop(1, 'rgba(255,255,255,0)');
+            g.fillStyle = glow;
+            g.fillRect(s[0] - s[2], s[1] - s[2], s[2] * 2, s[2] * 2);
+        });
+        var tex = new THREE.CanvasTexture(c);
+        tex.mapping = THREE.EquirectangularReflectionMapping;
+        var pmrem = new THREE.PMREMGenerator(renderer);
+        pmrem.compileEquirectangularShader();
+        var env = pmrem.fromEquirectangular(tex).texture;
+        pmrem.dispose();
+        tex.dispose();
+        return env;
+    }
+
+    function addLights(scene, flavorKey) {
+        var hemi = new THREE.HemisphereLight(0xbdf3e6, 0x02231d, 0.38);
+        scene.add(hemi);
+        var key = new THREE.DirectionalLight(0xffffff, 1.25);
+        key.position.set(4, 7, 6);
+        scene.add(key);
+        var rim = new THREE.DirectionalLight(FLAVORS[flavorKey].rim, 0.5);
+        rim.position.set(-6, 1.5, -3);
+        scene.add(rim);
+        var fill = new THREE.DirectionalLight(FLAVORS[flavorKey].fill, 0.45);
+        fill.position.set(5, -4, 2);
+        scene.add(fill);
+        return { rim: rim, fill: fill };
+    }
+
+    /* ------------------------------------------------------------------
+       Geometry: the can
+    ------------------------------------------------------------------ */
+    var ALU = { color: 0xdfe6e9, metalness: 1.0, roughness: 0.26 };
+
+    function buildCan(labelTex) {
+        var g = new THREE.Group();
+        var alu = new THREE.MeshStandardMaterial(ALU);
+        var aluDark = new THREE.MeshStandardMaterial({ color: 0xa8b3b8, metalness: 1.0, roughness: 0.38 });
+
+        var body = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.6, 1.6, 3.5, 96, 1, true),
+            new THREE.MeshStandardMaterial({ map: labelTex, metalness: 0.42, roughness: 0.32 })
+        );
+        body.position.y = 0.05;
+        g.add(body);
+
+        var shoulder = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.6, 0.62, 96, 1, true), alu);
+        shoulder.position.y = 2.11;
+        g.add(shoulder);
+
+        var neck = new THREE.Mesh(new THREE.CylinderGeometry(1.14, 1.14, 0.16, 96, 1, true), alu);
+        neck.position.y = 2.5;
+        g.add(neck);
+
+        var lid = new THREE.Mesh(new THREE.CylinderGeometry(1.06, 1.12, 0.1, 96), aluDark);
+        lid.position.y = 2.56;
+        g.add(lid);
+
+        var rim = new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.055, 14, 96), alu);
+        rim.rotation.x = Math.PI / 2;
+        rim.position.y = 2.6;
+        g.add(rim);
+
+        // pull tab, the detail that makes it read as a can and not a tube
+        var tab = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.045, 10, 40), alu);
+        tab.rotation.x = Math.PI / 2;
+        tab.position.set(0.18, 2.63, 0);
+        g.add(tab);
+        var tabArm = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.04, 0.16), alu);
+        tabArm.position.set(-0.22, 2.63, 0);
+        g.add(tabArm);
+
+        var base = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.28, 0.36, 96, 1, true), alu);
+        base.position.y = -1.88;
+        g.add(base);
+        var baseCap = new THREE.Mesh(new THREE.CylinderGeometry(1.28, 1.1, 0.16, 96), aluDark);
+        baseCap.position.y = -2.1;
+        g.add(baseCap);
+
+        return { group: g, body: body };
+    }
+
+    /* ------------------------------------------------------------------
+       Geometry: fruit + leaves. Radius 1; each berry is scaled to size.
+    ------------------------------------------------------------------ */
+    function buildCherry() {
+        var g = new THREE.Group();
+        var flesh = new THREE.MeshStandardMaterial({
+            color: 0x8c0f20, metalness: 0.04, roughness: 0.29, transparent: true
+        });
+        var body = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 30), flesh);
+        body.scale.set(1, 0.94, 1);
+        g.add(body);
+
+        // a shallow dimple where the stem meets the fruit
+        var dimple = new THREE.Mesh(
+            new THREE.SphereGeometry(0.26, 20, 14),
+            new THREE.MeshStandardMaterial({ color: 0x6d0a1a, roughness: 0.5, transparent: true })
+        );
+        dimple.position.y = 0.86;
+        dimple.scale.set(1, 0.55, 1);
+        g.add(dimple);
+
+        var curve = new THREE.QuadraticBezierCurve3(
+            new THREE.Vector3(0, 0.85, 0),
+            new THREE.Vector3(0.35, 1.5, 0.1),
+            new THREE.Vector3(0.15, 2.15, -0.2)
+        );
+        var stem = new THREE.Mesh(
+            new THREE.TubeGeometry(curve, 22, 0.055, 8, false),
+            new THREE.MeshStandardMaterial({ color: 0x4d7c2a, roughness: 0.72, transparent: true })
+        );
+        g.add(stem);
+        return g;
+    }
+
+    function buildBlueberry() {
+        var g = new THREE.Group();
+        var skin = new THREE.MeshStandardMaterial({
+            color: 0x2b3a86, metalness: 0.03, roughness: 0.52, transparent: true
+        });
+        var body = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 30), skin);
+        body.scale.set(1, 0.9, 1);
+        g.add(body);
+
+        var crownMat = new THREE.MeshStandardMaterial({ color: 0x25306b, roughness: 0.66, transparent: true });
+        var ring = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.07, 10, 28), crownMat);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.84;
+        g.add(ring);
+
+        // the five-point calyx every blueberry carries
+        for (var i = 0; i < 5; i++) {
+            var a = (i / 5) * Math.PI * 2;
+            var pt = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.26, 8), crownMat);
+            pt.position.set(Math.cos(a) * 0.26, 0.94, Math.sin(a) * 0.26);
+            pt.rotation.z = Math.cos(a) * -0.5;
+            pt.rotation.x = Math.sin(a) * 0.5;
+            g.add(pt);
+        }
+        return g;
+    }
+
+    function buildLeaf() {
+        var s = new THREE.Shape();
+        s.moveTo(0, -1);
+        s.bezierCurveTo(0.95, -0.45, 0.8, 0.6, 0, 1.15);
+        s.bezierCurveTo(-0.8, 0.6, -0.95, -0.45, 0, -1);
+        var geo = new THREE.ShapeGeometry(s, 26);
+        // bow the blade so it catches light instead of reading as a flat cutout
+        var p = geo.attributes.position;
+        for (var i = 0; i < p.count; i++) {
+            p.setZ(i, -Math.pow(p.getX(i), 2) * 0.42);
+        }
+        geo.computeVertexNormals();
+        var mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
+            color: 0x1e6b41, roughness: 0.68, metalness: 0.02,
+            side: THREE.DoubleSide, transparent: true
+        }));
+        return mesh;
+    }
+
+    function collectMaterials(obj) {
+        var out = [];
+        obj.traverse(function (n) { if (n.material) out.push(n.material); });
+        return out;
+    }
+
+    /* ------------------------------------------------------------------
+       Scene layout. Ortho cameras map 1 world unit to 1 CSS pixel, so the
+       berry positions below are the same numbers as the original design.
+    ------------------------------------------------------------------ */
+    var BERRIES = [
+        { top: 25, left: 30, size: 220, layer: 'fg', op: 1 },
+        { top: 60, left: 42, size: 100, layer: 'fg', op: 1 },
+        { top: 30, left: 62, size: 250, layer: 'fg', op: 1 },
+        { top: 15, left: 48, size: 140, layer: 'fg', op: 1 },
+        { top: 75, left: 20, size: 120, layer: 'fg', op: 1 },
+        { top: 45, left: 75, size: 180, layer: 'fg', op: 1 },
+        { top: 15, left: 40, size: 80,  layer: 'bg', op: 0.7 },
+        { top: 50, left: 55, size: 70,  layer: 'bg', op: 0.6 },
+        { top: 80, left: 35, size: 75,  layer: 'bg', op: 0.7 }
+    ];
+
+    var LEAVES = [
+        { top: 10, left: 15, size: 60,  op: 1 },
+        { top: 40, left: 80, size: 140, op: 0.4 },
+        { top: 70, left: 75, size: 80,  op: 1 },
+        { top: 85, left: 20, size: 120, op: 0.3 }
+    ];
+
+    var FLOAT_DUR = [5, 7, 6, 8, 5.5, 6.5, 9, 11, 10];
+
+    var flavor = 'classic';
+    var switching = false;
+    var spinDeg = 0;
+
+    var canCanvas = document.getElementById('c-can');
+
+    // --- can layer (own context so the spin blur touches only the can)
+    var canR = makeRenderer(canCanvas);
+    var canScene = new THREE.Scene();
+    canScene.environment = makeEnv(canR);
+    var canLights = addLights(canScene, flavor);
+    var canCam = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+
+    var labelTex = drawLabel('classic');
+    var can = buildCan(labelTex);
+    var tiltGroup = new THREE.Group();   // the fixed 25deg screen tilt
+    var spinGroup = new THREE.Group();   // cursor tracking + switch spin
+    spinGroup.add(can.group);
+    tiltGroup.add(spinGroup);
+    tiltGroup.rotation.z = -25 * Math.PI / 180;
+    canScene.add(tiltGroup);
+
+    // --- berry layers
+    function makeBerryLayer(canvasId, flavorKey) {
+        var r = makeRenderer(document.getElementById(canvasId));
+        var scene = new THREE.Scene();
+        scene.environment = makeEnv(r);
+        var lights = addLights(scene, flavorKey);
+        var cam = new THREE.OrthographicCamera(-1, 1, 1, -1, -4000, 4000);
+        var root = new THREE.Group();          // parallax carrier
+        scene.add(root);
+        return { r: r, scene: scene, cam: cam, root: root, lights: lights };
+    }
+
+    var bgLayer = makeBerryLayer('c-bg', flavor);
+    var fgLayer = makeBerryLayer('c-fg', flavor);
+
+    var berries = BERRIES.map(function (spec, i) {
+        var layer = spec.layer === 'fg' ? fgLayer : bgLayer;
+        var holder = new THREE.Group();
+        var cherry = buildCherry();
+        var blueberry = buildBlueberry();
+        blueberry.visible = false;
+        holder.add(cherry);
+        holder.add(blueberry);
+        layer.root.add(holder);
+
+        var mats = collectMaterials(holder);
+        mats.forEach(function (m) { m.opacity = spec.op; });
+
+        return {
+            spec: spec, holder: holder, cherry: cherry, blueberry: blueberry,
+            mats: mats, radius: spec.size * 0.3,
+            rx: 0, ry: 0, baseX: 0, baseY: 0,
+            angle: Math.random() * Math.PI * 2,
+            dur: FLOAT_DUR[i % FLOAT_DUR.length],
+            phase: i * 0.7, scale: 1, alpha: spec.op
+        };
+    });
+
+    var leaves = LEAVES.map(function (spec, i) {
+        var mesh = buildLeaf();
+        mesh.material.opacity = spec.op;
+        bgLayer.root.add(mesh);
+        return { spec: spec, mesh: mesh, dur: 10 + i * 2, phase: i * 1.2 };
+    });
+
+    // leaves need their own parallax offset, so keep them off the berry root
+    var leafRoot = new THREE.Group();
+    bgLayer.scene.add(leafRoot);
+    leaves.forEach(function (l) { leafRoot.add(l.mesh); });
+
+    /* ------------------------------------------------------------------
+       Resize: ortho frustums track CSS pixels exactly.
+    ------------------------------------------------------------------ */
+    var W = 0, H = 0;
+
+    function layout() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+
+        canR.setSize(W, H, false);
+        canCam.aspect = W / H;
+        // pull back on narrow screens so the tilted can still fits
+        var dist = 25;
+        if (canCam.aspect < 1) dist = 25 / Math.max(0.6, canCam.aspect * 0.95);
+        canCam.position.set(0, 0, dist);
+        canCam.lookAt(0, 0, 0);
+        canCam.updateProjectionMatrix();
+
+        [bgLayer, fgLayer].forEach(function (L) {
+            L.r.setSize(W, H, false);
+            L.cam.left = -W / 2; L.cam.right = W / 2;
+            L.cam.top = H / 2; L.cam.bottom = -H / 2;
+            L.cam.position.set(0, 0, 1000);
+            L.cam.updateProjectionMatrix();
+        });
+
+        berries.forEach(function (b) {
+            var cx = (b.spec.left / 100) * W + b.spec.size / 2;
+            var cy = (b.spec.top / 100) * H + b.spec.size / 2;
+            b.homeX = cx - W / 2;
+            b.homeY = H / 2 - cy;
+            b.holder.scale.setScalar(b.radius);
+        });
+
+        leaves.forEach(function (l) {
+            var cx = (l.spec.left / 100) * W + l.spec.size / 2;
+            var cy = (l.spec.top / 100) * H + l.spec.size / 2;
+            l.homeX = cx - W / 2;
+            l.homeY = H / 2 - cy;
+            l.mesh.scale.setScalar(l.spec.size * 0.5);
+        });
+    }
+
+    layout();
+    window.addEventListener('resize', layout);
+
+    /* ------------------------------------------------------------------
+       Pointer
+    ------------------------------------------------------------------ */
+    var mouse = { x: 0, y: 0, px: -9999, py: -9999 };
+    var cur = { x: 0, y: 0 };
+
+    window.addEventListener('mousemove', function (e) {
+        mouse.x = e.clientX / window.innerWidth - 0.5;
+        mouse.y = e.clientY / window.innerHeight - 0.5;
+        mouse.px = e.clientX;
+        mouse.py = e.clientY;
+    });
+
+    /* ------------------------------------------------------------------
+       Flavor switch
+    ------------------------------------------------------------------ */
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+
+    function activeIndex() {
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].classList.contains('active')) return i;
+        }
+        return -1;
+    }
+
+    function selectCard(index) {
+        if (switching || !cards.length) return;
+        var target = cards[((index % cards.length) + cards.length) % cards.length];
+        if (!target || target.classList.contains('active')) return;
+        cards.forEach(function (c) {
+            c.classList.remove('active');
+            c.setAttribute('aria-pressed', 'false');
+        });
+        target.classList.add('active');
+        target.setAttribute('aria-pressed', 'true');
+        switchFlavor(target.dataset.flavor);
+    }
+
+    cards.forEach(function (card, i) {
+        card.addEventListener('click', function () { selectCard(i); });
+    });
+    document.getElementById('prev').addEventListener('click', function () { selectCard(activeIndex() - 1); });
+    document.getElementById('next').addEventListener('click', function () { selectCard(activeIndex() + 1); });
+
+    function applyLabel(next) {
+        var tex = drawLabel(next);
+        var old = can.body.material.map;
+        can.body.material.map = tex;
+        can.body.material.needsUpdate = true;
+        if (old) old.dispose();
+    }
+
+    function tintLights(next) {
+        var F = FLAVORS[next];
+        [canLights, bgLayer.lights, fgLayer.lights].forEach(function (L) {
+            gsap.to(L.fill.color, {
+                r: ((F.fill >> 16) & 255) / 255,
+                g: ((F.fill >> 8) & 255) / 255,
+                b: (F.fill & 255) / 255,
+                duration: 1.5, ease: 'power2.inOut'
+            });
+        });
+    }
+
+    function switchFlavor(next) {
+        if (switching) return;
+        switching = true;
+        flavor = next;
+        var F = FLAVORS[next];
+
+        gsap.to(document.body, {
+            '--bg-inner': F.bg.inner,
+            '--bg-mid': F.bg.mid,
+            '--bg-outer': F.bg.outer,
+            duration: 1.5, ease: 'power2.inOut'
+        });
+        tintLights(next);
+
+        if (REDUCED) {
+            applyLabel(next);
+            berries.forEach(function (b) {
+                b.cherry.visible = next !== 'blue';
+                b.blueberry.visible = next === 'blue';
+            });
+            switching = false;
+            return;
+        }
+
+        // can: 360 into the swap, 720 settling out
+        var spin = { val: 0, blur: 0 };
+        gsap.to(spin, {
+            val: 360, blur: 15, duration: 0.6, ease: 'power2.in',
+            onUpdate: function () {
+                spinDeg = spin.val;
+                canCanvas.style.filter = 'blur(' + spin.blur + 'px)';
+            },
+            onComplete: function () {
+                applyLabel(next);
+                gsap.to(spin, {
+                    val: 720, blur: 0, duration: 1.5, ease: 'back.out(0.7)',
+                    onUpdate: function () {
+                        spinDeg = spin.val;
+                        canCanvas.style.filter = 'blur(' + spin.blur + 'px)';
+                    },
+                    onComplete: function () {
+                        spinDeg = 0;
+                        canCanvas.style.filter = 'none';
+                    }
+                });
+            }
+        });
+
+        // berries: implode, swap fruit, explode to new offsets.
+        // One master timeline owns the lock so it always releases.
+        var master = gsap.timeline({ onComplete: function () { switching = false; } });
+
+        berries.forEach(function (b) {
+            var nextX = (Math.random() - 0.5) * 200;
+            var nextY = (Math.random() - 0.5) * 200;
+            var tl = gsap.timeline();
+
+            tl.to(b, {
+                baseX: -b.homeX, baseY: -b.homeY, scale: 0.1, alpha: 0,
+                duration: 0.5, ease: 'power2.in',
+                onComplete: function () {
+                    b.cherry.visible = next !== 'blue';
+                    b.blueberry.visible = next === 'blue';
+                }
+            })
+            .to(b, { duration: 0.3 })
+            .to(b, {
+                baseX: nextX, baseY: nextY, scale: 1, alpha: b.spec.op,
+                duration: 0.9, ease: 'back.out(1.5)',
+                onComplete: function () { b.rx = 0; b.ry = 0; }
+            });
+
+            master.add(tl, 0);
+        });
+    }
+
+    /* ------------------------------------------------------------------
+       Frame loop
+    ------------------------------------------------------------------ */
+    var DEG = Math.PI / 180;
+
+    function frame() {
+        var t = Date.now() * 0.001;
+
+        cur.x += (mouse.x - cur.x) * 0.05;
+        cur.y += (mouse.y - cur.y) * 0.05;
+
+        // can: cursor tilt plus any switch spin
+        spinGroup.rotation.y = cur.x * 40 * DEG + spinDeg * DEG;
+        spinGroup.rotation.x = cur.y * 20 * DEG;
+        tiltGroup.position.y = REDUCED ? 0 : Math.sin(t * (Math.PI * 2 / 6)) * 0.28;
+
+        // parallax, same multipliers as the original
+        fgLayer.root.position.set(cur.x * 60, -cur.y * 60, 0);
+        bgLayer.root.position.set(cur.x * -30, -cur.y * -30, 0);
+        leafRoot.position.set(cur.x * -15, -cur.y * -15, 0);
+
+        berries.forEach(function (b, i) {
+            if (!switching) {
+                // repulsion, computed in screen pixels
+                var parX = b.spec.layer === 'fg' ? cur.x * 60 : cur.x * -30;
+                var parY = b.spec.layer === 'fg' ? cur.y * 60 : cur.y * -30;
+                var sx = b.homeX + b.baseX + b.rx + W / 2 + parX;
+                var sy = H / 2 - (b.homeY + b.baseY + b.ry) + parY;
+
+                var dx = mouse.px - sx;
+                var dy = mouse.py - sy;
+                var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                var tx = 0, ty = 0, speed = 1;
+                if (dist < 400) {
+                    var force = (400 - dist) / 400;
+                    tx = (dx / dist) * force * -80;
+                    ty = (dy / dist) * force * -80;
+                    speed = 1 + force * 5;
+                }
+                b.rx += (tx - b.rx) * 0.1;
+                b.ry += (ty - b.ry) * 0.1;
+                if (!REDUCED) b.angle += 0.2 * DEG * speed;
+            }
+
+            var ph = REDUCED ? 0 : (t + b.phase) * (Math.PI * 2 / b.dur);
+            var floatY = REDUCED ? 0 : Math.sin(ph) * 15;
+            var floatA = REDUCED ? 0 : Math.cos(ph) * 6 * DEG;
+
+            b.holder.position.set(
+                b.homeX + b.baseX + b.rx,
+                b.homeY + b.baseY - b.ry + floatY,
+                0
+            );
+            b.holder.rotation.set(0.25, b.angle, floatA);
+            b.holder.scale.setScalar(b.radius * b.scale);
+            for (var m = 0; m < b.mats.length; m++) b.mats[m].opacity = b.alpha;
+        });
+
+        leaves.forEach(function (l) {
+            var ph = REDUCED ? 0 : (t + l.phase) * (Math.PI * 2 / l.dur);
+            l.mesh.position.set(
+                l.homeX + (REDUCED ? 0 : Math.cos(ph * 0.5) * 15),
+                l.homeY + (REDUCED ? 0 : Math.sin(ph) * 20),
+                0
+            );
+            l.mesh.rotation.set(0.3, 0.4, REDUCED ? 0 : Math.sin(ph * 0.3) * 15 * DEG);
+        });
+
+        bgLayer.r.render(bgLayer.scene, bgLayer.cam);
+        canR.render(canScene, canCam);
+        fgLayer.r.render(fgLayer.scene, fgLayer.cam);
+
+        requestAnimationFrame(frame);
+    }
+
+    frame();
+
+    // Redraw the label once Galada has actually arrived.
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () {
+            if (!switching) applyLabel(flavor);
+        });
+    }
+
+    /* ------------------------------------------------------------------
+       Bubbles
+    ------------------------------------------------------------------ */
+    var bubbles = document.getElementById('bubbles');
+
+    function spawnBubble() {
+        var b = document.createElement('div');
+        b.className = 'bubble';
+        var size = Math.random() * 20 + 10;
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.left = Math.random() * 100 + '%';
+        b.style.bottom = '-50px';
+        b.style.opacity = Math.random() * 0.4 + 0.2;
+        var dur = Math.random() * 6 + 4;
+        b.style.animation = 'floatUp ' + dur + 's linear forwards';
+        bubbles.appendChild(b);
+        setTimeout(function () { b.remove(); }, dur * 1000);
+    }
+
+    if (!REDUCED) {
+        for (var i = 0; i < 6; i++) spawnBubble();   // page is never empty at rest
+        setInterval(spawnBubble, 400);
+    }
+})();
+</script>
+
+</body>
+</html>
