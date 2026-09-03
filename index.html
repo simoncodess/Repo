@@ -636,22 +636,80 @@
         }
 
         /* ================= RESPONSIVE ================= */
+        /* ================= RESPONSIVE ================= */
         @media (max-width: 1200px) {
-            .main-product-3d {
-                width: 100vw;
-                height: 60vh;
-                top: 40%;
+            /* The one-screen hero only fits on wide viewports; below the
+               breakpoint the columns stack and the page is allowed to scroll. */
+            html,
+            body {
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
             }
-        }
 
-        @media (max-width: 1200px) {
-            .hero-content {
-                grid-template-columns: 1fr;
+            .hero {
+                height: auto;
+                min-height: 100vh;
+                align-items: flex-start;
                 padding-top: 8rem;
+                padding-bottom: 4rem;
             }
 
+            .hero-content {
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                height: auto;
+                gap: 3rem;
+            }
+
+            /* Can leaves the fixed overlay and leads the stack */
             .hero-center {
                 order: -1;
+                position: relative;
+                width: 100%;
+                height: 55vh;
+                /* the 25deg tilt widens the canvas past the viewport - clip it */
+                overflow: hidden;
+            }
+
+            .main-product-3d {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: rotate(25deg);
+                display: block; /* don't depend on model-viewer's own stylesheet */
+                width: 100%;
+                height: 100%;
+                touch-action: pan-y; /* let vertical scroll win over orbit drag */
+            }
+
+            .hero-left,
+            .hero-right {
+                width: 100%;
+                max-width: 520px;
+                height: auto;
+                padding: 0;
+                align-items: center;
+                text-align: center;
+            }
+
+            .hero-left {
+                gap: 1.5rem;
+            }
+
+            .description {
+                max-width: none;
+            }
+
+            .award-badge {
+                margin-top: 0;
+                justify-content: center;
+            }
+
+            .product-carousel {
+                align-items: center;
             }
 
             .main-title,
@@ -659,14 +717,33 @@
                 font-size: 5rem;
             }
 
-            .hero-right {
-                align-items: center;
-                text-align: center;
-            }
-
             .side-title {
                 align-self: center;
                 text-align: center;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .header {
+                padding: 1.25rem 4%;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 6rem;
+            }
+
+            .hero-center {
+                height: 42vh;
+            }
+
+            /* Galada headlines are nowrap single words - size is the only lever */
+            .main-title,
+            .side-title {
+                font-size: 3rem;
             }
         }
     </style>
@@ -877,13 +954,29 @@
             } catch (e) { console.error("Texture preload failed", e); }
         });
 
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                if (isSwitching) return;
-                cards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                const flavor = card.dataset.flavor;
-                switchFlavor(flavor);
+        const navArrows = document.querySelectorAll('.nav-arrow');
+
+        function activeCardIndex() {
+            return Array.from(cards).findIndex(c => c.classList.contains('active'));
+        }
+
+        function selectCard(index) {
+            if (isSwitching || !cards.length) return;
+            const target = cards[((index % cards.length) + cards.length) % cards.length];
+            if (!target || target.classList.contains('active')) return;
+            cards.forEach(c => c.classList.remove('active'));
+            target.classList.add('active');
+            switchFlavor(target.dataset.flavor);
+        }
+
+        cards.forEach((card, i) => {
+            card.addEventListener('click', () => selectCard(i));
+        });
+
+        // Carousel arrows step through the flavors, wrapping at both ends
+        navArrows.forEach((arrow, i) => {
+            arrow.addEventListener('click', () => {
+                selectCard(activeCardIndex() + (i === 0 ? -1 : 1));
             });
         });
 
@@ -958,7 +1051,19 @@
             });
 
             // 3. Berries "Hide & Reveal" with Dynamic Positioning
-            let completedBerries = 0;
+            if (!berries.length) {
+                isSwitching = false;
+                return;
+            }
+
+            // One master timeline owns the lock, so isSwitching is released
+            // even if an individual berry's callback throws.
+            const berryMaster = gsap.timeline({
+                onComplete: () => {
+                    isSwitching = false;
+                }
+            });
+
             berries.forEach((berry, i) => {
                 const bW = berry.offsetWidth / 2;
                 const bH = berry.offsetHeight / 2;
@@ -990,7 +1095,13 @@
                     duration: 0.5,
                     ease: "power2.in",
                     onComplete: () => {
-                        berry.src = flavor === 'blue' ? 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/blueberry.glb' : 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb';
+                        try {
+                            berry.src = flavor === 'blue'
+                                ? 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/blueberry.glb'
+                                : 'https://api.getlayers.ai/storage/v1/object/public/public/assets/soda-14ff8a788d/cherry.glb';
+                        } catch (e) {
+                            console.error("Berry model swap failed", e);
+                        }
                         heroCenter.style.zIndex = 50;
                     }
                 })
@@ -1014,13 +1125,10 @@
                             berry.dataset.baseY = nextBaseY;
                             berry.dataset.rx = 0;
                             berry.dataset.ry = 0;
-
-                            completedBerries++;
-                            if (completedBerries === berries.length) {
-                                isSwitching = false;
-                            }
                         }
                     });
+
+                berryMaster.add(berryTl, 0);
             });
         }
 
